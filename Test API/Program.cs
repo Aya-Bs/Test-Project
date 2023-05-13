@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using DAL.Interfaces;
 using DAL.Classes;
+using Helpers;
+using static System.Net.WebRequestMethods;
 
 public class Program
 {
@@ -38,8 +40,10 @@ public class Program
 
         //inject automapper inside application (tell the app that we have to read the app we are created
         builder.Services.AddAutoMapper(typeof(Program).Assembly);
+        //on va utiliser CORS
+        //le front va lancer l'application sur +eurs ports et retourner les rq ==> CORS va interdire les requétes prevenants d'autre ports  
 
-
+        builder.Services.AddCors();
 
 
         //apres ma correction , j'ai trouvé du probleme dans configuration 
@@ -48,13 +52,16 @@ public class Program
         //ajouter EF 
         //let the application know what context xe are using to talk to our data base 
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("WebApp")));
+        //çvd que l'interface IOR est un type de OR
         builder.Services.AddScoped<IOffreRepository, OffreRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IAbonnementRepository, AbonnementRepository>();
         builder.Services.AddScoped<IAdresseRepository, AdresseRepository>();
         builder.Services.AddScoped<IFactureRepository, FactureRepository>();
         builder.Services.AddScoped<ICarteRepository, CarteRepository>();
-        //cet ligne de code est normalement faite pour lier les deux mis en <> mais j'ai trouvé probeleme
+        //configurer JwtService en tant que service
+        builder.Services.AddScoped<JwtService>();
+        
         //l'appel de la méthode "AddNewtonsoftJson()" du package "Microsoft.AspNetCore.Mvc.NewtonsoftJson"
         builder.Services.AddControllers().AddNewtonsoftJson();
 
@@ -67,6 +74,12 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+        app.UseCors(options => options
+        .WithOrigins(new [] {"http://localhost:3000" , "http://localhost:8080" , "http://localhost:4200", "http://localhost:5253" })
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()//permettre l'envoi des cookies vers le front 
+        );
 
         app.UseAuthorization();
 

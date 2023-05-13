@@ -71,62 +71,6 @@ namespace Test_API.Controllers
         }
       
 
-        
-
-        /*
-        //authentification 
-        [HttpPost]
-        [Route("Authentificate")]
-        public async Task<User> Authenticate(string email, string password)
-        {
-            var user = await _userRepository.GetUsers().SingleOrDefaultAsync(u => u.email == email);
-
-            if (user == null  || VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-            {
-                return null;
-            }
-
-            // authentication successful
-            return user;
-        }
-        */
-        /*[HttpPost]
-        [Route("Authentificate")]
-        public async Task<IActionResult> Authenticate(string email, string password)
-        {
-            var user = await _userRepository.GetUsers().FirstOrDefaultAsync(u => u.email == email );
-
-            if (user == null || !_userRepository.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-            {
-                return Unauthorized();
-            }
-
-            // authentication successful
-            return Ok(user);
-        }*/
-
-
-
-
-
-        /*
-        //authentification 
-        [HttpPost]
-        [Route("Authentificate")]
-       public async Task<IActionResult> Authentificate([FromBody] User userObj)
-        {
-            if (userObj == null)
-                return BadRequest();
-
-            var user = await _userRepository.GetUsers().FirstOrDefaultAsync(x => x.email == userObj.email && x.password == userObj.password);
-            if (user == null)
-                return NotFound(new { Message = "User Not Found" });
-
-            return Ok(new { Message = "login success!" });
-        }
-        */
-        //register
-
 
     }
 

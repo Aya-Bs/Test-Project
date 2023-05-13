@@ -2,11 +2,13 @@
 using DAL.Classes;
 using DAL.Interfaces;
 using Entities;
+using Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Requests;
 using System.Security.Cryptography;
+
 
 namespace Test_API.Controllers
 {
@@ -15,11 +17,13 @@ namespace Test_API.Controllers
     public class AuthController : ControllerBase
     {
        readonly IUserRepository userRepository;
-        readonly ApplicationDbContext context;
-        public AuthController(IUserRepository userRepo, ApplicationDbContext _context)
+        private ApplicationDbContext context;
+        readonly JwtService jwtService;
+        public AuthController(IUserRepository userRepo, ApplicationDbContext _context, JwtService _jwtService)
         {
             userRepository = userRepo;
             context = _context;
+            jwtService = _jwtService;
         }
        [HttpPost]
         [Route("Register")]
@@ -57,11 +61,48 @@ namespace Test_API.Controllers
                 {
                     return BadRequest("mot de passe incorrect !");
                 }
-            return ("salut salut !");
+            var jwt = jwtService.Generate(user.idUser);
+            //le frontend ne peut accéder au jwt, il doit seulement l'obtenir et l'envoyer vers le backend qui va le traiter
+            Response.Cookies.Append("jwt", jwt, new CookieOptions
+            {
+                HttpOnly = true
+            });
+            return Ok(new
+            {
+                message = "connection avec succés"
+            });
                 
             
             
             
+        }
+        //cette méthode permet de retourner un utilisateur a partir du token
+        [HttpGet("user")]
+        public IActionResult User()
+        {
+            try
+            {
+                var jwt = Request.Cookies["jwt"];
+                var token = jwtService.Verify(jwt);
+                int idUser = int.Parse(token.Issuer);
+                var user = userRepository.GetUser(idUser);
+                return Ok(user);
+            }catch(Exception e)
+            {
+                return Unauthorized();
+            }
+            
+        }
+        [HttpPost]
+        [Route("Logout")]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("jwt");
+            return Ok(new
+            {
+                message = "vous étes déconnecté"
+            });
+
         }
        
 

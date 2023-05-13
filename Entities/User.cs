@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Entities
 {
@@ -13,8 +14,11 @@ namespace Entities
         public int idUser { get; set; }
         public string nom { get; set; }
         public string prenom { get; set; }
-        public byte[] PasswordHash { get; set; }
-        public byte[] PasswordSalt { get; set; }
+        //n'affiche pas le mdp
+
+        [JsonIgnore] public byte[] PasswordHash { get; set; }
+
+        [JsonIgnore] public byte[] PasswordSalt { get; set; }
         public long telephone { get; set; }
         public string email { get; set; }
        /* [ForeignKey("adresseidPays")]

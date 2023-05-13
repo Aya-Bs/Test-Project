@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.16" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.4">
@@ -35,6 +36,7 @@
     <ProjectReference Include="..\Business\Business.csproj" />
     <ProjectReference Include="..\DAL\DAL.csproj" />
     <ProjectReference Include="..\Entities\Entities (modele de donnes).csproj" />
+    <ProjectReference Include="..\Helpers\Helpers.csproj" />
     <ProjectReference Include="..\Modele_de_domaine\Modele_de_domaine.csproj" />
     <ProjectReference Include="..\Profilee\Profiles.csproj" />
     <ProjectReference Include="..\Requests\Requests.csproj" />
