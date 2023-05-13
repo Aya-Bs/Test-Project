@@ -48,17 +48,20 @@ namespace Test_API.Controllers
         public async Task<ActionResult<string>>Login ([FromQuery]UserAuthDto request)
         {
             var user = await userRepository.GetUsers().FirstOrDefaultAsync(x => x.email == request.email);
-            if (user != null)
+            if (user == null)
             {
-                
-                if (!userRepository.VerifyPasswordHash(request.password, user.PasswordHash, user.PasswordSalt))
+                return BadRequest("ce compte n'existe pas");
+
+             }
+            if (!(userRepository.VerifyPasswordHash(request.password, user.PasswordHash, user.PasswordSalt)))
                 {
                     return BadRequest("mot de passe incorrect !");
                 }
-                return ("salut salut!");
-            }
+            return ("salut salut !");
+                
             
-            return BadRequest("ce compte n'existe pas");
+            
+            
         }
        
 

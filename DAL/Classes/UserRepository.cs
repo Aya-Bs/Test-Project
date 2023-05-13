@@ -56,10 +56,11 @@ namespace DAL.Classes
                 nom = u.nom,
                 prenom = u.prenom,
                 email = u.email,
-                
-                telephone =u.telephone,
-               
-        });
+                telephone = u.telephone,
+                PasswordHash = u.PasswordHash,
+                PasswordSalt = u.PasswordSalt
+
+            }) ;
         }
         //private bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
        
@@ -94,6 +95,7 @@ namespace DAL.Classes
          {
              if (password == null || storedHash == null || storedSalt == null)
              {
+                Console.WriteLine("empty");
                  return false;
              }
 
