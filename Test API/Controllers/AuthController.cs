@@ -77,8 +77,9 @@ namespace Test_API.Controllers
             
         }
         //cette méthode permet de retourner un utilisateur a partir du token
-        [HttpGet("user")]
-        public IActionResult User()
+        [HttpGet]
+        [Route("GetUserByToken")]
+        public IActionResult GetUserByToken()
         {
             try
             {
