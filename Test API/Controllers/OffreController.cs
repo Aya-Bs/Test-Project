@@ -5,6 +5,8 @@ using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using DocumentFormat.OpenXml.Bibliography;
 using Business;
+using DocumentFormat.OpenXml.Office2021.Excel.RichDataWebImage;
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
 
 namespace Test_API.Controllers
 {
@@ -13,7 +15,7 @@ namespace Test_API.Controllers
     public class OffreController : ControllerBase
     {
         private readonly IOffreRepository offreRepository;
-        
+
 
         //assign the private var offreRepository to the injected car offreRepo
         public OffreController(IOffreRepository offreRepo)
@@ -33,7 +35,7 @@ namespace Test_API.Controllers
         public async Task<IActionResult> GetOffreById(int id)
         {
             var offre = offreRepository.GetOffre(id);
-            if(offre == null)
+            if (offre == null)
             {
                 return NotFound();
             }
@@ -41,12 +43,12 @@ namespace Test_API.Controllers
 
         }
 
-       [HttpPost]
+        [HttpPost]
         [Route("AddOffre")]
-        public async Task < IActionResult > AddOffre(Offre offre)
+        public async Task<IActionResult> AddOffre(Offre offre)
         {
             offreRepository.AddOffre(offre);
-            return Created("successful",offre);
+            return Created("successful", offre);
         }
 
         [HttpPut]
@@ -61,21 +63,27 @@ namespace Test_API.Controllers
         [Route("DeleteOffre")]
         public async Task<IActionResult> DeleteOffre(int id)
         {
-           
-           
-                
+
+
+
             if (id != null) {
                 await offreRepository.DeleteOffre(id);
-                return Ok(new { message = "Offre deleted" });}
+                return Ok(new { message = "Offre deleted" }); }
             else
             {
                 return NotFound("cette offre n'exixte pas");
             }
-                
-            
+
+        }
 
 
 
+        [HttpGet]
+        [Route("GetOffreByContenu")]
+        public List<Offre> GetOffreByContenu([FromQuery] string word)
+        {
+             
+            return offreRepository.GetOffreByContenu(word);
         }
 
 

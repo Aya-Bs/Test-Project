@@ -31,6 +31,7 @@ namespace Test_API.Controllers
         public IEnumerable<User> GetUsers()
         {
             return (IEnumerable<User>)_userRepository.GetUsers();
+            
         }
 
         [HttpGet]

@@ -15,30 +15,26 @@ namespace Entities
 
         [Key]
         public int idAbonnement { get; set; }
+        public string nomAb { get; set; }
         public float prixAbonnement { get; set; }
-        public string typeAbonnement { get; set; }
         public int nombreAchat { get; set; }
-        public bool isActive { get; set; }
+        public bool isActive { get; set; } = true;
         public DateTime dateDebut { get; set; }
         public DateTime dateFin { get; set; }
-        public string categorie { get; set; }
-        [ForeignKey("idOffre")]
-        public Offre offre;
-        
-        
+        public string contenu { get; set; }
+        public string description { get; set; }
 
-        public Abonnement(int idAbonnement, float prixAbonnement, string typeAbonnement, int nombreAchat, bool isActive, DateTime dateDebut, DateTime dateFin, string categorie, Offre offre)
+
+
+        public Abonnement(int idAbonnement, float prixAbonnement, int nombreAchat, bool isActive, DateTime dateDebut, DateTime dateFin)
         {
             this.idAbonnement = idAbonnement;
             this.prixAbonnement = prixAbonnement;
-            this.typeAbonnement = typeAbonnement;
             this.nombreAchat = nombreAchat;
             this.isActive = isActive;
             this.dateDebut = dateDebut;
             this.dateFin = dateFin;
-            this.categorie = categorie;
-            this.offre = offre;
-
+            
         }
 
 
@@ -46,19 +42,18 @@ namespace Entities
         {
         }
 
-        public Boolean isExpired(DateTime dateDebut, DateTime dateFin)
+        /*public Boolean isActiveTime(DateTime dateDebut, DateTime dateFin)
         {
-            return true;
-        }
-        public string type (DateTime dateDebut, DateTime dateFin)
-        {
-            /*TimeSpan ts = dateFin - dateDebut;
-            if (ts <= 31)
+            int ts = DateTime.Compare(DateTime.Now , dateFin);
+            if (ts > 0)
             {
-                typeAbonnement = "mensuel";
-            }*/
-            return null;
-        }
+                isActive = false;
+            }
+            return false;
+
+        }*/
+       
+       
 
 
     }

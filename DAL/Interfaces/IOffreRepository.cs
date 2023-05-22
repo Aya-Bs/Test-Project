@@ -12,5 +12,6 @@ namespace DAL.Interfaces
         Task<int> DeleteOffre(int idOffre);
 
         Task UpdateOffre(Offre offre);
+        List<Offre> GetOffreByContenu(string word);
     }
 }

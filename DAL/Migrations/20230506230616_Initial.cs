@@ -41,19 +41,19 @@ namespace DAL.Migrations
                     nombreAchat = table.Column<int>(type: "integer", nullable: false),
                     isActive = table.Column<bool>(type: "boolean", nullable: false),
                     dateDebut = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    dateFin = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    categorie = table.Column<string>(type: "text", nullable: false),
-                    idOffre = table.Column<int>(type: "integer", nullable: false)
+                    dateFin = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    
+                   // idOffre = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Abonnement", x => x.idAbonnement);
-                    table.ForeignKey(
+                   /* table.ForeignKey(
                         name: "FK_Abonnement_Offre_offreidAbonnement",
                         column: x => x.idOffre,
                         principalTable: "Offre",
                         principalColumn: "idOffre",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Cascade);*/
 
                 });
 

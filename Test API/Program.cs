@@ -12,6 +12,8 @@ using DAL.Interfaces;
 using DAL.Classes;
 using Helpers;
 using static System.Net.WebRequestMethods;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authentication;
 
 public class Program
 {
@@ -36,15 +38,38 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-
+        
 
         //inject automapper inside application (tell the app that we have to read the app we are created
         builder.Services.AddAutoMapper(typeof(Program).Assembly);
         //on va utiliser CORS
         //le front va lancer l'application sur +eurs ports et retourner les rq ==> CORS va interdire les requétes prevenants d'autre ports  
 
-        builder.Services.AddCors();
+        builder.Services.AddCors(option =>
+        {
+            option.AddDefaultPolicy(policy =>
+            {
+               policy
+                //.WithOrigins(new[] { "http://localhost:57378", "http://localhost:8080", "http://localhost:4200", "http://localhost:5253" })
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();//permettre l'envoi des cookies vers le front
+            });
+        }
+        
+            );
+        //Pour l'inscription avec google
+        //on installe le pckg authetication.google 
+        //on ajoute la ligne suivante
+        /*builder.Services.AddAuthentication()
+            .AddGoogle(options =>
+            {
+                options.ClientId = configuration["App:GoogleClientID"];
+                options.ClientId = configuration["App:GoogleClientSecret"];
+            });*/
 
+        //allez vers Console.developers.goole -> apis -> credentials -> créer projet
 
         //apres ma correction , j'ai trouvé du probleme dans configuration 
         // alors : Le mot "Configuration" dans la ligne de code que je vous ai donnée se réfère à une instance de l'interface IConfiguration, qui est utilisée pour accéder aux valeurs de configuration dans ASP.NET Core.
@@ -66,6 +91,7 @@ public class Program
         builder.Services.AddControllers().AddNewtonsoftJson();
 
         var app = builder.Build();
+        
 
 
         // Configure the HTTP request pipeline.
@@ -74,15 +100,16 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-        app.UseCors(options => options
-        .WithOrigins(new [] {"http://localhost:3000" , "http://localhost:8080" , "http://localhost:4200", "http://localhost:5253" })
-        .AllowAnyHeader()
-        .AllowAnyMethod()
-        .AllowCredentials()//permettre l'envoi des cookies vers le front 
-        );
-
+        /*  app.UseCors(options => options
+          .WithOrigins(new [] {})
+          .AllowAnyHeader()
+          .AllowAnyMethod()
+           
+          );*/
+       
+       
         app.UseAuthorization();
-
+        app.UseAuthentication();
         app.MapControllers();
 
         app.Run();

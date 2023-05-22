@@ -1,0 +1,5 @@
+﻿-Rest est un ensemble de principes qui doivent étre suivi par le Web API
+- https://www.developpez.net/forums/d1002600/general-developpement/alm/mvc-vs-3-tier/
+-pour authetification Google voir :
+https://www.youtube.com/watch?v=YSKqZcS6PLg
+

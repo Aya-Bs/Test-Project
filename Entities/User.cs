@@ -20,6 +20,7 @@ namespace Entities
 
         [JsonIgnore] public byte[] PasswordSalt { get; set; }
         public long telephone { get; set; }
+        public string adresse { get; set; }
         public string email { get; set; }
        /* [ForeignKey("adresseidPays")]
         public virtual Adresse adresse { get; set; }

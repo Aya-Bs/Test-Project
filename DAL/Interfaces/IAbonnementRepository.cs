@@ -15,5 +15,6 @@ namespace DAL.Interfaces
         Task<int> DeleteAbonnement(int id);
 
         Task UpdateAbonnement(Abonnement abonnement);
+        List<Abonnement> GetAbonnementByContenu(string word);
     }
 }

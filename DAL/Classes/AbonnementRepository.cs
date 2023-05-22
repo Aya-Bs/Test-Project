@@ -20,8 +20,24 @@ namespace DAL.Classes
         }
         public IEnumerable<Abonnement> GetAbonnements()
         {
-            return _dbContext.Abonnements.Include(nameof(Offre)).ToList();
+            return _dbContext.Abonnements.ToList();
+               
         }
+        /*blic IQueryable<Abonnement> GetAbonnements()
+        {
+            return _dbContext.Abonnements.Select(u => new Abonnement
+            {
+                idAbonnement = u.idAbonnement,
+                prixAbonnement = u.prixAbonnement,
+                typeAbonnement = u.typeAbonnement,
+                isActive = u.isActive,
+                dateDebut = u.dateDebut,
+                dateFin = u.dateFin,
+                offre = u.offre
+
+            });
+        }*/
+        
 
         public async Task<Abonnement> GetAbonnement(int? id)
         {
@@ -50,6 +66,18 @@ namespace DAL.Classes
 
             }
             return _dbContext.SaveChanges();
+        }
+
+        public List<Abonnement> GetAbonnementByContenu(string word)
+        {
+            List<Abonnement> abs = new List<Abonnement>();
+            foreach(Abonnement ab in _dbContext.Abonnements)
+            {
+                 if (ab.contenu.Contains(word))
+                        abs.Add(ab);
+                
+            }
+            return abs;
         }
     }
 }

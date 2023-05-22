@@ -57,5 +57,14 @@ namespace Test_API.Controllers
             var result = abonnementRepository.DeleteAbonnement(id);
             return new JsonResult("Deleted Successfully");
         }
+
+        [HttpGet]
+        [Route("GetAbonnementByContenu")]
+        public List<Abonnement> GetAbonnementByContenu([FromQuery] string word)
+        {
+
+            return abonnementRepository.GetAbonnementByContenu(word);
+        }
     }
+
 }

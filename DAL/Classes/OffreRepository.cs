@@ -1,4 +1,5 @@
 ﻿using DAL.Interfaces;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using Entities;
 using System;
 using System.Collections.Generic;
@@ -41,24 +42,31 @@ namespace DAL.Classes
         public async Task<int> DeleteOffre(int id_offre)
         {
             
-            try
-            {
+            
                 var offre = _dbContext.Offres.FirstOrDefault(x => x.idOffre == id_offre);
-                if (offre != null)
+            if (offre != null)
             {
-                    _dbContext.Offres.Remove(offre);
-  
+                _dbContext.Offres.Remove(offre);
+
             }
 
-            }catch (Exception e)
-            {
-                Console.WriteLine("offre non existante");
-            }
             
             return _dbContext.SaveChanges();
 
         }
 
-
+        public List<Offre> GetOffreByContenu(string word)
+        {
+            List<Offre> offres = new List<Offre>();
+            foreach (Offre offre in _dbContext.Offres){
+                if (offre.contenu.Contains(word))
+                {
+                    offres.Add(offre);
+                }
+                
+                
+            }
+            return offres;
+        }
     }
 }

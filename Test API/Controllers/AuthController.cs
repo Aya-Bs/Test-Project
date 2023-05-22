@@ -3,6 +3,7 @@ using DAL.Classes;
 using DAL.Interfaces;
 using Entities;
 using Helpers;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ namespace Test_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors]
     public class AuthController : ControllerBase
     {
        readonly IUserRepository userRepository;
@@ -27,7 +29,7 @@ namespace Test_API.Controllers
         }
        [HttpPost]
         [Route("Register")]
-        public async Task<ActionResult<User>> Register(string nom,string prenom,long telephone, [FromQuery] UserRegisterDto request)
+        public async Task<ActionResult<User>> Register(string nom,string prenom,long telephone,string adresse, [FromQuery] UserRegisterDto request)
         {
             if (userRepository.GetUsers().Any(u => u.email == request.email))
             {
@@ -39,17 +41,18 @@ namespace Test_API.Controllers
                 email = request.email,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
+                adresse = adresse,
                 nom = nom,
                 prenom = prenom,
                 telephone = telephone,
             };
             context.Users.Add(user);
             await context.SaveChangesAsync();
-            return Ok("vous étes inscrit");
+            return user;
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>>Login ([FromQuery]UserAuthDto request)
+        public async Task<ActionResult<User>>Login ([FromQuery]UserAuthDto request)
         {
             var user = await userRepository.GetUsers().FirstOrDefaultAsync(x => x.email == request.email);
             if (user == null)
@@ -67,13 +70,8 @@ namespace Test_API.Controllers
             {
                 HttpOnly = true
             });
-            return Ok(new
-            {
-                message = "connection avec succés"
-            });
+            return user;
                 
-            
-            
             
         }
         //cette méthode permet de retourner un utilisateur a partir du token

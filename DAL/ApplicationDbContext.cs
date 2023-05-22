@@ -16,6 +16,7 @@ namespace DAL
         public ApplicationDbContext(IConfiguration configuration,DbContextOptions<ApplicationDbContext> options) : base(options)
          {
             Configuration = configuration;
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
      /*public ApplicationDbContext(IConfiguration configuration)
         {
@@ -36,6 +37,13 @@ namespace DAL
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<Abonnement>().HasData(
+                
+                new Abonnement {idAbonnement=1, prixAbonnement = 6, nomAb= "Basic", nombreAchat = 0, isActive = true, dateDebut = new DateTime(2023, 06, 01), dateFin = new DateTime(2023, 07, 01), contenu = "films / music / podcasts / audible books", description="" },
+                new Abonnement { idAbonnement = 2, prixAbonnement = 10, nomAb = "Pro", nombreAchat = 0, isActive = true, dateDebut = new DateTime(2023, 06, 01), dateFin = new DateTime(2023, 07, 01), contenu = "films / music / podcasts / audible books", description = "" },
+                new Abonnement { idAbonnement = 3, prixAbonnement = 15, nomAb = "Mega", nombreAchat = 0, isActive = true, dateDebut = new DateTime(2023, 06, 01), dateFin = new DateTime(2023, 07, 01), contenu = "films / music / podcasts / audible books", description = "" }
+
+                );
            
         }
        
