@@ -1,4 +1,5 @@
-﻿using DAL.Classes;
+﻿using Business;
+using DAL.Classes;
 using DAL.Interfaces;
 using Entities;
 using Microsoft.AspNetCore.Http;
@@ -10,35 +11,19 @@ namespace Test_API.Controllers
     [ApiController]
     public class CarteController : ControllerBase
     {
-        ICarteRepository carteRepository;
-        public CarteController(ICarteRepository carteRepo)
+        readonly ICarteService carteService;
+        public CarteController(ICarteService carteServ)
         {
-            carteRepository = carteRepo;
+            carteService = carteServ;
         }
-        [HttpGet]
-        [Route("GetAll")]
-        public IEnumerable<CartePaiement> GetCartes()
-        {
-            return carteRepository.GetCartes();
-        }
-        [HttpGet]
-        [Route("GetCarteById")]
-        public async Task<IActionResult> GetCarteById(int id)
-        {
-            var carte = carteRepository.GetCarte(id);
-            if (carte == null)
-            {
-                return NotFound();
-            }
-            return Ok(carte);
-
-        }
+       
+        
 
         [HttpPost]
         [Route("AddCarte")]
         public async Task<IActionResult> AddCarte(CartePaiement carte)
         {
-            carteRepository.AddCarte(carte);
+            carteService.AddCarte(carte);
             return Created("successful", carte);
         }
 
@@ -46,7 +31,7 @@ namespace Test_API.Controllers
         [Route("UpdateCarte")]
         public async Task<IActionResult> UpdateCarte(CartePaiement carte)
         {
-            carteRepository.UpdateCarte(carte);
+            carteService.UpdateCarte(carte);
             return NoContent();
         }
 
@@ -54,7 +39,7 @@ namespace Test_API.Controllers
         [Route("DeleteCarte")]
         public JsonResult DeleteCarte(int id)
         {
-            var result = carteRepository.DeleteCarte(id);
+            var result = carteService.DeleteCarte(id);
             return new JsonResult("Deleted Successfully");
         }
     }

@@ -29,7 +29,7 @@
                 ValidateAudience = false,
             }, out SecurityToken validatedToken) ;
             return (JwtSecurityToken)validatedToken;
-
+            
         }
     }
 }

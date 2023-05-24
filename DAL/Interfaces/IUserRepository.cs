@@ -12,16 +12,15 @@ namespace DAL.Interfaces
     public interface IUserRepository
     {
 
-        IQueryable<User> GetUsers();
+        IEnumerable<User> GetUsers();
 
         // int? signifie que la valeur peut de int peut etre null
-        Task<User> GetUser(int? id);
+        Task<User> GetUserById(int? id);
         Task AddUser(User user);
-        Task<int> DeleteUser(int id);
+        Task DeleteUser(int id);
+       Task<User> GetUserByEmail(string email);
 
         Task UpdateUser(User user);
-        public bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt);
-
-        void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordwsalt);
+        
     }
 }

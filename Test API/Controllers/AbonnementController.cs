@@ -1,4 +1,5 @@
-﻿using DAL.Classes;
+﻿using Business;
+using DAL.Classes;
 using DAL.Interfaces;
 using Entities;
 using Microsoft.AspNetCore.Http;
@@ -10,22 +11,23 @@ namespace Test_API.Controllers
     [ApiController]
     public class AbonnementController : ControllerBase
     {
-        IAbonnementRepository abonnementRepository;
-        public AbonnementController(IAbonnementRepository abonnementRepo)
+        
+        private readonly IAbonnementService abonnementService;
+        public AbonnementController(IAbonnementService abonnementServ)
         {
-            abonnementRepository = abonnementRepo;
+            abonnementService = abonnementServ;
         }
         [HttpGet]
         [Route("GetAll")]
         public IEnumerable<Abonnement> GetAbonnements()
         {
-            return abonnementRepository.GetAbonnements();
+            return abonnementService.GetAbonnements();
         }
         [HttpGet]
         [Route("GetAbonnementById")]
         public async Task<IActionResult> GetAbonnementById(int id)
         {
-            var abonnement = abonnementRepository.GetAbonnement(id);
+            var abonnement = abonnementService.GetAbonnement(id);
             if (abonnement == null)
             {
                 return NotFound();
@@ -38,7 +40,7 @@ namespace Test_API.Controllers
         [Route("AddAbonnement")]
         public async Task<IActionResult> AddAbonnement(Abonnement abonnement)
         {
-            abonnementRepository.AddAbonnement(abonnement);
+            abonnementService.AddAbonnement(abonnement);
             return Created("successful", abonnement);
         }
 
@@ -46,7 +48,7 @@ namespace Test_API.Controllers
         [Route("UpdateAbonnement")]
         public async Task<IActionResult> UpdateOffre(Abonnement abonnement)
         {
-            abonnementRepository.UpdateAbonnement(abonnement);
+            abonnementService.UpdateAbonnement(abonnement);
             return NoContent();
         }
 
@@ -54,7 +56,7 @@ namespace Test_API.Controllers
         [Route("DeleteAbonnement")]
         public JsonResult DeleteAbonnement(int id)
         {
-            var result = abonnementRepository.DeleteAbonnement(id);
+            var result = abonnementService.DeleteAbonnement(id);
             return new JsonResult("Deleted Successfully");
         }
 
@@ -63,7 +65,7 @@ namespace Test_API.Controllers
         public List<Abonnement> GetAbonnementByContenu([FromQuery] string word)
         {
 
-            return abonnementRepository.GetAbonnementByContenu(word);
+            return abonnementService.GetAbonnementByContenu(word);
         }
     }
 

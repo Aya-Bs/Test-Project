@@ -1,39 +1,89 @@
-﻿using Entities;
+﻿using DAL.Interfaces;
+using Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace Business
 {
     public class UserService : IUserService
     {
-        public UserService() { }
-
-        void IUserService.getUser(string email, string mdp)
+        private readonly IUserRepository userRepository;
+        public UserService(IUserRepository userRepo)
         {
-            throw new NotImplementedException();
+            userRepository = userRepo;
+        }
+        public async Task AddUser(User user)
+        {
+            await userRepository.AddUser(user);
         }
 
-        IEnumerable<User> IUserService.GetUsers()
+       
+       public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+            {
+                using (var hmac = new HMACSHA512())
+                {
+                    passwordSalt = hmac.Key;
+                    passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                }
+            }
+            
+        
+
+        public async Task DeleteUser(int id)
         {
-            throw new NotImplementedException();
+            userRepository.DeleteUser(id);
+            
+
         }
 
-        void IUserService.inscrire(User user)
+        public  Task<User> GetUserByEmail(string email)
         {
-            throw new NotImplementedException();
+           return userRepository.GetUserByEmail(email);
+            //var user = userRepository.GetUsers().FirstOrDefault(x => x.email == email);
+           // return null;
+                
+            
         }
 
-        void IUserService.RemoveUser(int idUser)
+        public Task<User> GetUserById(int? id)
         {
-            throw new NotImplementedException();
+            return userRepository.GetUserById(id);
         }
 
-        void IUserService.UpdateUser(User updateUser)
+        public IEnumerable<User> GetUsers()
         {
-            throw new NotImplementedException();
+            
+                return userRepository.GetUsers();
+                
         }
+
+        public Task UpdateUser(User user)
+        {
+           return userRepository.UpdateUser(user);
+        }
+
+        public bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
+        {
+            if (password == null || storedHash == null || storedSalt == null)
+            {
+                Console.WriteLine("empty");
+                return false;
+            }
+
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(storedSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                return computedHash.SequenceEqual(storedHash);
+            }
+
+
+        }
+
+
     }
 }

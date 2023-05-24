@@ -23,20 +23,7 @@ namespace DAL.Classes
             return _dbContext.Abonnements.ToList();
                
         }
-        /*blic IQueryable<Abonnement> GetAbonnements()
-        {
-            return _dbContext.Abonnements.Select(u => new Abonnement
-            {
-                idAbonnement = u.idAbonnement,
-                prixAbonnement = u.prixAbonnement,
-                typeAbonnement = u.typeAbonnement,
-                isActive = u.isActive,
-                dateDebut = u.dateDebut,
-                dateFin = u.dateFin,
-                offre = u.offre
-
-            });
-        }*/
+       
         
 
         public async Task<Abonnement> GetAbonnement(int? id)

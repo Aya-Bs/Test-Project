@@ -1,22 +1,24 @@
-﻿using System;
-using Entities;
-
+﻿using Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
 
 namespace Business
 {
-    internal interface IUserService
-    { 
+    public interface IUserService
+    {
+        IEnumerable<User> GetUsers();
+        Task<User> GetUserById(int? id);
+        Task AddUser(User user);
+        Task DeleteUser(int id);
+        Task<User> GetUserByEmail(string email);
 
-        IEnumerable<User> GetUsers(); 
-        void inscrire(User user);
-        void getUser(string email, string mdp);
-        void UpdateUser(User updateUser);
-        void RemoveUser(int idUser);
+        Task UpdateUser(User user);
+        
 
+        void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt);
+        bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt);
     }
 }

@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.30.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Entities\Entities (modele de donnes).csproj" />
+	  <ProjectReference Include="..\DAL\DAL.csproj" />
   </ItemGroup>
 
 </Project>

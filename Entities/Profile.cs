@@ -8,5 +8,7 @@ namespace Entities
 {
     public class Profile
 {
+        public int idProfile { get; set; }
+        public User user { get; set; }
 }
 }

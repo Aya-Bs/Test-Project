@@ -1,4 +1,5 @@
-﻿using DAL;
+﻿using Business;
+using DAL;
 using DAL.Classes;
 using DAL.Interfaces;
 using Entities;
@@ -18,49 +19,50 @@ namespace Test_API.Controllers
     [EnableCors]
     public class AuthController : ControllerBase
     {
-       readonly IUserRepository userRepository;
+        IUserRepository userRepository;
         private ApplicationDbContext context;
         readonly JwtService jwtService;
-        public AuthController(IUserRepository userRepo, ApplicationDbContext _context, JwtService _jwtService)
+        readonly IUserService userService;
+        public AuthController(IUserService userServ, ApplicationDbContext _context, JwtService _jwtService)
         {
-            userRepository = userRepo;
+            userService = userServ;
             context = _context;
             jwtService = _jwtService;
         }
        [HttpPost]
         [Route("Register")]
-        public async Task<ActionResult<User>> Register(string nom,string prenom,long telephone,string adresse, [FromQuery] UserRegisterDto request)
+        public async Task<ActionResult<User>> Register( [FromQuery] UserRegisterDto request)
         {
-            if (userRepository.GetUsers().Any(u => u.email == request.email))
+            if (userService.GetUserByEmail(request.email)==null)
             {
                 return NotFound("ce compte existe déjà");
             }
-            userRepository.CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);
+            userService.CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);
             var user = new User
             {
                 email = request.email,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
-                adresse = adresse,
-                nom = nom,
-                prenom = prenom,
-                telephone = telephone,
+                adresse = request.adresse,
+                nom = request.nom,
+                prenom = request.prenom,
+                telephone = request.telephone,
             };
-            context.Users.Add(user);
-            await context.SaveChangesAsync();
+            userService.AddUser(user);
+            
             return user;
         }
 
         [HttpPost("login")]
         public async Task<ActionResult<User>>Login ([FromQuery]UserAuthDto request)
         {
-            var user = await userRepository.GetUsers().FirstOrDefaultAsync(x => x.email == request.email);
+            var user = userService.GetUsers().FirstOrDefault(x => x.email == request.email);
             if (user == null)
             {
                 return BadRequest("ce compte n'existe pas");
 
              }
-            if (!(userRepository.VerifyPasswordHash(request.password, user.PasswordHash, user.PasswordSalt)))
+            if (!userService.VerifyPasswordHash(request.password, user.PasswordHash,user.PasswordSalt))
                 {
                     return BadRequest("mot de passe incorrect !");
                 }
@@ -84,7 +86,7 @@ namespace Test_API.Controllers
                 var jwt = Request.Cookies["jwt"];
                 var token = jwtService.Verify(jwt);
                 int idUser = int.Parse(token.Issuer);
-                var user = userRepository.GetUser(idUser);
+                var user = userService.GetUserById(idUser);
                 return Ok(user);
             }catch(Exception e)
             {

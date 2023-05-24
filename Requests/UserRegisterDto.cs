@@ -7,8 +7,17 @@ using System.Threading.Tasks;
 
 namespace Requests
 {
-    public class UserRegisterDto
+    public class 
+        UserRegisterDto
     {
+        [Required]
+        public string nom { get; set; } = string.Empty;
+        [Required]
+        public string prenom { get; set; } = string.Empty;
+
+        public long telephone { get; set; }
+
+        public string adresse { get; set; } = string.Empty;
         [Required,EmailAddress]
         public string email { get; set; } = string.Empty;
         [Required, MinLength(6, ErrorMessage="Mot de passe trop court \n Au moins 6 caractères")]

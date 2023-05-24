@@ -9,7 +9,7 @@
         public AutomapperProfiles() {
             //mappage entre Mdedomaine.User et MdeDonnee.User
             CreateMap<User, Modele_Donnee.User>().ReverseMap();
-            CreateMap<Adresse, Modele_Donnee.Adresse>().ReverseMap();
+            
 
 
 

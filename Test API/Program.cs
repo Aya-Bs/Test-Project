@@ -14,6 +14,7 @@ using Helpers;
 using static System.Net.WebRequestMethods;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication;
+using Business;
 
 public class Program
 {
@@ -50,8 +51,8 @@ public class Program
             option.AddDefaultPolicy(policy =>
             {
                policy
-                //.WithOrigins(new[] { "http://localhost:57378", "http://localhost:8080", "http://localhost:4200", "http://localhost:5253" })
-                .AllowAnyOrigin()
+                .WithOrigins(new[] { "http://localhost:57378", "http://localhost:8080", "http://localhost:4200", "http://localhost:5253" })
+                
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();//permettre l'envoi des cookies vers le front
@@ -81,9 +82,11 @@ public class Program
         builder.Services.AddScoped<IOffreRepository, OffreRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IAbonnementRepository, AbonnementRepository>();
-        builder.Services.AddScoped<IAdresseRepository, AdresseRepository>();
         builder.Services.AddScoped<IFactureRepository, FactureRepository>();
         builder.Services.AddScoped<ICarteRepository, CarteRepository>();
+        builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IAbonnementService, AbonnementService>();
+        builder.Services.AddScoped<ICarteService, CarteService>();
         //configurer JwtService en tant que service
         builder.Services.AddScoped<JwtService>();
         
@@ -106,7 +109,7 @@ public class Program
           .AllowAnyMethod()
            
           );*/
-       
+        app.UseCors();
        
         app.UseAuthorization();
         app.UseAuthentication();

@@ -5,7 +5,7 @@ using Modele_de_domaine;
 using Business;
 using Microsoft.EntityFrameworkCore;
 using User = Entities.User;
-using Adresse = Entities.Adresse;
+
 using AutoMapper;
 using DAL.Classes;
 using DAL.Interfaces;
@@ -17,20 +17,20 @@ namespace Test_API.Controllers
     public class UserController : ControllerBase
     {
 
-        private readonly IUserRepository _userRepository;
-        private readonly IMapper mapper;
+        private readonly IUserService userService;
+        
 
-        public UserController (IUserRepository userRepository,IMapper mapper )
+        public UserController (IUserService userServ )
         {
-            _userRepository = userRepository;
-            this.mapper=mapper;
+            userService = userServ;
+            
         }
 
         [HttpGet]
         [Route("GetAll")]
         public IEnumerable<User> GetUsers()
         {
-            return (IEnumerable<User>)_userRepository.GetUsers();
+            return userService.GetUsers();
             
         }
 
@@ -38,7 +38,7 @@ namespace Test_API.Controllers
         [Route("GetUserById")]
         public async Task<IActionResult> GetUserById(int id)
         {
-            var user = _userRepository.GetUser(id);
+            var user = userService.GetUserById(id);
             if (user == null)
             {
                 return NotFound();
@@ -51,7 +51,7 @@ namespace Test_API.Controllers
         [Route("AddUser")]
         public async Task<IActionResult> AddUser(User user)
         {
-            _userRepository.AddUser(user);
+            userService.AddUser(user);
             return Created("successful", user);
         }
 
@@ -59,7 +59,7 @@ namespace Test_API.Controllers
         [Route("UpdateUser")]
         public async Task<IActionResult> UpdateUser(User user)
         {
-            _userRepository.UpdateUser(user);
+            userService.UpdateUser(user);
             return NoContent();
         }
 
@@ -67,7 +67,7 @@ namespace Test_API.Controllers
         [Route("DeleteUser")]
         public JsonResult DeleteUser(int id)
         {
-            var result = _userRepository.DeleteUser(id);
+            var result = userService.DeleteUser(id);
             return new JsonResult("Deleted Successfully");
         }
       

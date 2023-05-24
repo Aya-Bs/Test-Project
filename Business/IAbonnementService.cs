@@ -5,15 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.Interfaces
+namespace Business
 {
-    public interface IAbonnementRepository
+    public interface IAbonnementService
     {
-
         IEnumerable<Abonnement> GetAbonnements();
         Task<Abonnement> GetAbonnement(int? id);
         void AddAbonnement(Abonnement abonnement);
-        Task<int> DeleteAbonnement(int id);
+        Task DeleteAbonnement(int id);
 
         Task UpdateAbonnement(Abonnement abonnement);
         List<Abonnement> GetAbonnementByContenu(string word);

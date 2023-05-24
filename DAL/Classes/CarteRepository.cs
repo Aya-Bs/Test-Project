@@ -16,7 +16,7 @@ namespace DAL.Classes
             _dbContext = dbContext;
 
         }
-        public async Task<CartePaiement> GetCarte(int? id)
+       /* public async Task<CartePaiement> GetCarte(int? id)
         {
             return _dbContext.CartePaiements.Find(id);
         }
@@ -24,7 +24,7 @@ namespace DAL.Classes
         public IEnumerable<CartePaiement> GetCartes()
         {
             return _dbContext.CartePaiements.ToList();
-        }
+        }*/
         public void AddCarte(CartePaiement carte)
         {
             _dbContext.CartePaiements.Add(carte);
