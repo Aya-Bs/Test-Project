@@ -15,6 +15,7 @@ using static System.Net.WebRequestMethods;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication;
 using Business;
+using Stripe;
 
 public class Program
 {
@@ -39,7 +40,14 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-        
+        /***************************/
+
+        StripeConfiguration.ApiKey = configuration.GetValue<string>("StripeSettings:SecretKey");
+        builder.Services
+            .AddScoped<CustomerService>()
+                .AddScoped<ChargeService>()
+                .AddScoped<TokenService>()
+                .AddScoped<IStripeService, StripeService>();
 
         //inject automapper inside application (tell the app that we have to read the app we are created
         builder.Services.AddAutoMapper(typeof(Program).Assembly);

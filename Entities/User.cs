@@ -10,6 +10,9 @@ namespace Entities
     [Table("User")]
     public class User 
     {
+        private string name;
+        private string email1;
+
         [Key]
         public int idUser { get; set; }
         public string nom { get; set; }
@@ -22,12 +25,13 @@ namespace Entities
         public long telephone { get; set; }
         public string adresse { get; set; }
         public string email { get; set; }
-       /* [ForeignKey("adresseidPays")]
-        public virtual Adresse adresse { get; set; }
-        
-        public int adresseidPays;*/
-        //public CartePaiement carte { get; set; }
 
+        /* [ForeignKey("adresseidPays")]
+         public virtual Adresse adresse { get; set; }
+
+         public int adresseidPays;*/
+        //public CartePaiement carte { get; set; }
+        
 
 #pragma warning disable CS8618 // Le propriété 'Adresses' non-nullable doit contenir une valeur non-null lors de la fermeture du constructeur. Envisagez de déclarer le propriété comme nullable.
         public User(int idUser, string nom, string prenom, string email, string password, long telephone)
@@ -84,9 +88,21 @@ namespace Entities
                 return true;
             }
         }*/
-
         public User()
         {
+        }
+        public string idToString(int id)
+        {
+            this.idUser = id;
+            return id.ToString();
+        }
+        
+
+        public User(string name, string email, string id)
+        {
+            this.name = name;
+            this.email = email;
+            id = this.idToString(idUser);
         }
     }
 }

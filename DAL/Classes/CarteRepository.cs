@@ -38,13 +38,14 @@ namespace DAL.Classes
         }
         public async Task<int> DeleteCarte(int id)
         {
-            var carte = _dbContext.CartePaiements.FirstOrDefault(x => x.idCvvCvc == id);
+            return 0;
+           /* var carte = _dbContext.CartePaiements.FirstOrDefault(x => x.idCvvCvc == id);
             if (carte != null)
             {
                 _dbContext.CartePaiements.Remove(carte);
 
             }
-            return _dbContext.SaveChanges();
+            return _dbContext.SaveChanges();*/
 
         }
     }

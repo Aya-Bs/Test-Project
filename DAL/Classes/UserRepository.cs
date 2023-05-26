@@ -73,6 +73,10 @@ namespace DAL.Classes
             _dbContext.Users.Update(user);
             _dbContext.SaveChanges();
         }
+        public async Task UpdateUserDetails(string nom, string prenom)
+        {
+            throw new NotImplementedException();
+        }
 
         
 
