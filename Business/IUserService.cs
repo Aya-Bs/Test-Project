@@ -16,7 +16,7 @@ namespace Business
         Task<User> GetUserByEmail(string email);
 
         Task UpdateUser(User user);
-        
+        public Task UpdateUserDetails(string nom, string prenom, int telephone, string adresse);
 
         void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt);
         bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt);

@@ -91,18 +91,13 @@ namespace Entities
         public User()
         {
         }
-        public string idToString(int id)
-        {
-            this.idUser = id;
-            return id.ToString();
-        }
-        
 
-        public User(string name, string email, string id)
+        public User(string nom, string prenom, int telephone, string adresse)
         {
-            this.name = name;
-            this.email = email;
-            id = this.idToString(idUser);
+            this.nom = nom;
+            this.prenom = prenom;
+            this.telephone = telephone;
+            this.adresse = adresse;
         }
     }
 }

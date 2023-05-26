@@ -63,6 +63,20 @@ namespace Test_API.Controllers
             return NoContent();
         }
 
+        [HttpPut]
+        [Route("UpdateUserInfo")]
+        public async Task<IActionResult> UpdateUserDetails([FromQuery] string nom, string prenom, int telephone , string adresse, string email)
+        {
+            var user = userService.GetUserByEmail(email);
+            if (user != null)
+            {
+                userService.UpdateUserDetails(nom, prenom, telephone, adresse);
+                
+            }
+            return Ok("user updated");
+            
+        }
+
         [HttpDelete]
         [Route("DeleteUser")]
         public JsonResult DeleteUser(int id)

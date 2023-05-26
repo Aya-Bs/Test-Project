@@ -67,6 +67,11 @@ namespace Business
            return userRepository.UpdateUser(user);
         }
 
+        public Task UpdateUserDetails(string nom, string prenom,  int telephone, string adresse)
+        {
+            return userRepository.UpdateUserDetails(nom, prenom, telephone, adresse);
+        }
+
         public bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
         {
             if (password == null || storedHash == null || storedSalt == null)

@@ -46,8 +46,8 @@ public class Program
         builder.Services
             .AddScoped<CustomerService>()
                 .AddScoped<ChargeService>()
-                .AddScoped<TokenService>()
-                .AddScoped<IStripeService, StripeService>();
+                .AddScoped<TokenService>();
+                
 
         //inject automapper inside application (tell the app that we have to read the app we are created
         builder.Services.AddAutoMapper(typeof(Program).Assembly);

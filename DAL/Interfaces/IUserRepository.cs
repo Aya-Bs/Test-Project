@@ -19,7 +19,7 @@ namespace DAL.Interfaces
         Task AddUser(User user);
         Task DeleteUser(int id);
        Task<User> GetUserByEmail(string email);
-
+        public Task UpdateUserDetails(string nom, string prenom, int telephone, string adresse);
         Task UpdateUser(User user);
         
     }
