@@ -73,10 +73,10 @@ namespace DAL.Classes
             _dbContext.Users.Update(user);
             _dbContext.SaveChanges();
         }
-        public async Task UpdateUserDetails(string nom, string prenom,  int telephone, string adresse, string email)
+        public async Task UpdateUserDetails(string nom, string prenom,  int telephone, string adresse)
         {
-            var user = _dbContext.Users.FirstOrDefault(x=>x.email==email));
-            user = new User(nom, prenom, telephone, adresse);
+           // var user = _dbContext.Users.FirstOrDefault(x=>x.email);
+            User user = new User(nom, prenom, telephone, adresse);
             _dbContext.Users.Update(user);
             _dbContext.SaveChanges();
         }

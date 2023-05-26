@@ -95,6 +95,8 @@ public class Program
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IAbonnementService, AbonnementService>();
         builder.Services.AddScoped<ICarteService, CarteService>();
+        builder.Services.AddScoped<IMultimediaService, MultimediaService>();
+        builder.Services.AddScoped<IMultimediaRepository, MultimediaRepository>();
         //configurer JwtService en tant que service
         builder.Services.AddScoped<JwtService>();
         
