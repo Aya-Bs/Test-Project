@@ -75,7 +75,7 @@ namespace DAL.Classes
         }
         public async Task UpdateUserDetails(string nom, string prenom,  int telephone, string adresse, string email)
         {
-            var user = _dbContext.Users.FirstOrDefault(x=>x.email==email));
+            var user = _dbContext.Users.FirstOrDefault(x=>x.email==email);
             user = new User(nom, prenom, telephone, adresse);
             _dbContext.Users.Update(user);
             _dbContext.SaveChanges();
@@ -86,9 +86,10 @@ namespace DAL.Classes
             throw new NotImplementedException();
         }
 
-        
-
-        
+        Task IUserRepository.UpdateUserDetails(string nom, string prenom, int telephone, string adresse)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 
