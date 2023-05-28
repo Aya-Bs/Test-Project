@@ -65,9 +65,9 @@ namespace Test_API.Controllers
 
         [HttpPut]
         [Route("UpdateUserInfo")]
-        public async Task<IActionResult> UpdateUserDetails([FromQuery] string nom, string prenom, int telephone , string adresse, string email)
+        /*public async Task<IActionResult> UpdateUserDetails([FromQuery] string nom, string prenom, int telephone , string adresse)
         {
-            var user = userService.GetUserByEmail(email);
+            var user;//= userService.GetUserByEmail);
             if (user != null)
             {
                 userService.UpdateUserDetails(nom, prenom, telephone, adresse);
@@ -75,7 +75,8 @@ namespace Test_API.Controllers
             }
             return Ok("user updated");
             
-        }
+        }*/
+
 
         [HttpDelete]
         [Route("DeleteUser")]
