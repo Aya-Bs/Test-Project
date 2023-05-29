@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test API", "Test API\Test API.csproj", "{B5882D9C-66FB-414E-8625-C253F462B9C7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities (modele de donnes)", "Entities\Entities (modele de donnes).csproj", "{6AFE0B16-04C4-4273-B475-23ACA8C26CB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{6AFE0B16-04C4-4273-B475-23ACA8C26CB1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{AE301CD9-3847-41AD-BE69-F90425A580B1}"
 EndProject
@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Requests", "Requests\Reques
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Helpers", "Helpers\Helpers.csproj", "{420852D8-8573-4355-B92E-A81B4ABEAAF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business", "Business\Business.csproj", "{A080C729-99F4-481D-BB0B-16ADAF2A8C96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Business", "Business\Business.csproj", "{A080C729-99F4-481D-BB0B-16ADAF2A8C96}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailService", "EmailService\EmailService.csproj", "{2AB13716-1E86-4B2E-81C6-AB81D17EA951}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{A080C729-99F4-481D-BB0B-16ADAF2A8C96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A080C729-99F4-481D-BB0B-16ADAF2A8C96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A080C729-99F4-481D-BB0B-16ADAF2A8C96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AB13716-1E86-4B2E-81C6-AB81D17EA951}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AB13716-1E86-4B2E-81C6-AB81D17EA951}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AB13716-1E86-4B2E-81C6-AB81D17EA951}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AB13716-1E86-4B2E-81C6-AB81D17EA951}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

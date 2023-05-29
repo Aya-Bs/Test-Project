@@ -1,11 +1,18 @@
 ﻿using DAL.Interfaces;
+using DocumentFormat.OpenXml.Office2016.Excel;
 using Entities;
+
+using Microsoft.AspNetCore.Identity;
+using NLog.Fluent;
+using Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 
 namespace Business
@@ -13,9 +20,13 @@ namespace Business
     public class UserService : IUserService
     {
         private readonly IUserRepository userRepository;
+        
+        
         public UserService(IUserRepository userRepo)
         {
             userRepository = userRepo;
+           
+           
         }
         public async Task AddUser(User user)
         {
@@ -88,7 +99,85 @@ namespace Business
 
 
         }
+        /*public async Task<ResponseObject> ForgotPassword(string email)
+        {
+            ResponseObject responseObject = new ResponseObject();
+            var user = await userManager.FindByEmailAsync(email);
+            try
+            {
+                if (user == null || !(await userManager.IsEmailConfirmedAsync(user)))
+                {
+                    responseObject.Message = "Failed";
+                    responseObject.isValid = false;
+                    responseObject.Data = null;
+                    return responseObject;
+                }
+                var code = await userManager.GeneratePasswordResetTokenAsync(user);
+                responseObject.Message = "Success";
+                responseObject.isValid = true;
+                var dynamicProperties = new Dictionary<string, object> { ["Code"] = code, ["User"] = user };
+                responseObject.Data = dynamicProperties;
+                return responseObject;
+            }
+            catch (Exception ex)
+            {
 
+                Log.Error("An error occured at Forgot Password {Error} {StackTrace} {Source}");
+                Log.Error(ex.Message);
+                Log.Error(ex.StackTrace);
+                
+                Log.Error(ex.Source);
+                responseObject.Message = "Error";
+                responseObject.isValid = false;
+                responseObject.Data = null;
+                return responseObject;
 
+            }
+        }
+
+        public async Task<ResponseObject> ResetPassword(ResetPasswordViewModel model)
+        {
+            ResponseObject responseObject = new ResponseObject();
+            
+            try
+            {
+                var user = await userManager.FindByEmailAsync(model.email);
+                if(user == null)
+                {
+                    responseObject.Message = "Failed";
+                    responseObject.isValid = false;
+                    responseObject.Data = null;
+                    return responseObject;
+                }
+                var result = await userManager.ResetPasswordAsync(user, model.Code, model.password);
+                if (result.Succeeded)
+                {
+                    
+                    this.CreatePasswordHash(model.password, out byte[] passwordHash, out byte[] passwordSalt);
+                    user.PasswordHash = passwordHash;
+                    user.PasswordSalt = passwordSalt;
+                    userRepository.UpdateUser(user);
+                    responseObject.Message = "Success";
+                    responseObject.isValid = true;
+                    responseObject.Data = null;
+                   
+                } return responseObject;
+
+            }
+            catch(Exception e)
+            {
+                Log.Error("An error occured at Forgot Password {Error} {StackTrace} {Source}");
+                Log.Error(e.Message);
+                Log.Error(e.StackTrace);
+
+                Log.Error(e.Source);
+                responseObject.Message = "Error";
+                responseObject.isValid = false;
+                responseObject.Data = null;
+                return responseObject;
+            }
+            
+            
+        }*/
     }
 }

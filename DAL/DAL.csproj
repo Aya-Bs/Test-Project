@@ -10,7 +10,7 @@
     <PackageReference Include="Npgsql" Version="7.0.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.3" />
     <PackageReference Include="Stripe.net" Version="41.18.0" />
-	<ProjectReference Include="..\Entities\Entities (modele de donnes).csproj" />
+	<ProjectReference Include="..\Entities\Entities.csproj" />
 	 
 	 
   </ItemGroup>

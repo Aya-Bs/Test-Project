@@ -11,14 +11,20 @@ namespace Entities
     [Table("Song")]
     public class Song : MultimediaContent
 {
-    public Song(int id, string title, string description, string length, string plateforme)
+        public string artist { get; set; }
+        public string[] lyrics { get; set; }
+    public Song(int id, string title, string description, string length, string plateforme,string route, string artist, string[] lyrics)
     {
         this.id = id;
-        this.content_type = "song";
+            this.title = title;
+            this.content_type = "song";
         this.length = length;
-        this.title = title;
+        
         this.description = description;
         this.plateforme = plateforme;
+            this.route = route;
+            this.artist = artist;
+            this.lyrics = lyrics;
         }
     public Song()
     {

@@ -16,7 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Business\Business.csproj" />
     <ProjectReference Include="..\DAL\DAL.csproj" />
-    <ProjectReference Include="..\Entities\Entities (modele de donnes).csproj" />
+    <ProjectReference Include="..\Entities\Entities.csproj" />
     <ProjectReference Include="..\Modele_de_domaine\Modele_de_domaine.csproj" />
   </ItemGroup>
 

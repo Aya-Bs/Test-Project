@@ -10,7 +10,8 @@ namespace Entities
     [Table("Podcast")]
     public class Podcast : MultimediaContent
 {
-        public Podcast(int id, string title, string description, string length, string plateforme)
+        public string topic { get; set; }
+        public Podcast(int id, string title, string description, string length, string plateforme,string topic)
         {
             this.id = id;
             this.content_type = "podcast";
@@ -18,6 +19,8 @@ namespace Entities
             this.title = title;
             this.description = description;
             this.plateforme = plateforme;
+            this.route = route;
+            this.topic = topic;
         }
         public Podcast()
         {

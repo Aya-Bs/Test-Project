@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Security.Cryptography;
@@ -8,7 +9,7 @@ using System.Text.Json.Serialization;
 namespace Entities
 {
     [Table("User")]
-    public class User 
+    public class User
     {
         private string name;
         private string email1;

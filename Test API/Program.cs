@@ -8,14 +8,20 @@ using Npgsql.EntityFrameworkCore.PostgreSQL;
 //ajouter les directives using
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
-using DAL.Interfaces;
-using DAL.Classes;
+
 using Helpers;
 using static System.Net.WebRequestMethods;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication;
 using Business;
 using Stripe;
+
+using EmailService;
+using Microsoft.AspNetCore.Identity;
+using Entities;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using DAL.Interfaces;
+using DAL.Classes;
 
 public class Program
 {
@@ -47,6 +53,7 @@ public class Program
             .AddScoped<CustomerService>()
                 .AddScoped<ChargeService>()
                 .AddScoped<TokenService>();
+
                 
 
         //inject automapper inside application (tell the app that we have to read the app we are created
@@ -59,15 +66,17 @@ public class Program
             option.AddDefaultPolicy(policy =>
             {
                policy
-                .WithOrigins(new[] { "http://localhost:57378", "http://localhost:8080", "http://localhost:4200", "http://localhost:5253" })
+                .WithOrigins(new[] { "http://localhost:50363", "http://localhost:8080", "http://localhost:4200", "http://localhost:5253" })
                 
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();//permettre l'envoi des cookies vers le front
             });
         }
-        
             );
+        
+        
+
         //Pour l'inscription avec google
         //on installe le pckg authetication.google 
         //on ajoute la ligne suivante
@@ -97,9 +106,14 @@ public class Program
         builder.Services.AddScoped<ICarteService, CarteService>();
         builder.Services.AddScoped<IMultimediaService, MultimediaService>();
         builder.Services.AddScoped<IMultimediaRepository, MultimediaRepository>();
+        builder.Services.AddScoped<IEmailSender, EmailSender>();
+       
         //configurer JwtService en tant que service
         builder.Services.AddScoped<JwtService>();
-        
+        var emailConfig = builder.Configuration
+        .GetSection("EmailConfiguration")
+        .Get<EmailConfiguration>();
+        builder.Services.AddSingleton(emailConfig);
         //l'appel de la méthode "AddNewtonsoftJson()" du package "Microsoft.AspNetCore.Mvc.NewtonsoftJson"
         builder.Services.AddControllers().AddNewtonsoftJson();
 

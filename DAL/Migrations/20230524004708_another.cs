@@ -23,7 +23,8 @@ namespace DAL.Migrations
                     title = table.Column<string>(type: "text", nullable: false),
                     description = table.Column<string>(type: "text", nullable: false),
                     length = table.Column<string>(type: "text", nullable: false),
-                    plateforme = table.Column<string>(type: "text", nullable: false)
+                    plateforme = table.Column<string>(type: "text", nullable: false),
+                    route = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -40,7 +41,8 @@ namespace DAL.Migrations
                     title = table.Column<string>(type: "text", nullable: false),
                     description = table.Column<string>(type: "text", nullable: false),
                     length = table.Column<string>(type: "text", nullable: false),
-                    plateforme = table.Column<string>(type: "text", nullable: false)
+                    plateforme = table.Column<string>(type: "text", nullable: false),
+                    route = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -57,7 +59,8 @@ namespace DAL.Migrations
                     title = table.Column<string>(type: "text", nullable: false),
                     description = table.Column<string>(type: "text", nullable: false),
                     length = table.Column<string>(type: "text", nullable: false),
-                    plateforme = table.Column<string>(type: "text", nullable: false)
+                    plateforme = table.Column<string>(type: "text", nullable: false),
+                    route = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -74,7 +77,8 @@ namespace DAL.Migrations
                     title = table.Column<string>(type: "text", nullable: false),
                     description = table.Column<string>(type: "text", nullable: false),
                     length = table.Column<string>(type: "text", nullable: false),
-                    plateforme = table.Column<string>(type: "text", nullable: false)
+                    plateforme = table.Column<string>(type: "text", nullable: false),
+                    route = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

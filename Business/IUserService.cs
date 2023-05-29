@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,5 +21,8 @@ namespace Business
 
         void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt);
         bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt);
+        //public Task<ResponseObject> ForgotPassword(string email);
+        //public Task<ResponseObject> ResetPassword(ResetPasswordViewModel model);
+
     }
 }

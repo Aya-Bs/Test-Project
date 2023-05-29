@@ -16,7 +16,8 @@ namespace Entities
         public string description { get; set; }
         public string length { get; set; }
         public string plateforme { get; set; }
-        public MultimediaContent(int id, string content_type, string title, string description, string length, string plateforme)
+        public string route { get; set; }
+        public MultimediaContent(int id, string content_type, string title, string description, string length, string plateforme, string route)
         {
             this.id = id;
             this.content_type = content_type;
@@ -24,7 +25,7 @@ namespace Entities
             this.title = title;
             this.description = description;
             this.plateforme = plateforme;
-
+            this.route = route;
         }
         public MultimediaContent()
         {

@@ -11,7 +11,10 @@ namespace Entities
     [Table("Film")]
     public class Film : MultimediaContent
 {
-        public Film(int id,  string title, string description, string length, string plateforme)
+        public string[] actors { get; set; }
+        public string rating { get; set; }
+        public string topic { get; set; }
+        public Film(int id,  string title, string description, string length, string plateforme, string route, string[] actors, string rating, string topic)
         {
             this.id = id;
             this.content_type = "film";
@@ -19,6 +22,10 @@ namespace Entities
             this.title = title;
             this.description = description;
             this.plateforme = plateforme;
+            this.route = route;
+            this.actors = actors;
+            this.rating = rating;
+            this.topic = topic;
         }
         public Film()
         {

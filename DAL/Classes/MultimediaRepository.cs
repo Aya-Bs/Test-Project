@@ -1,5 +1,6 @@
 ﻿using DAL.Interfaces;
 using DocumentFormat.OpenXml.Office2010.ExcelAc;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Entities;
 using System;
 using System.Collections.Generic;
@@ -65,14 +66,47 @@ namespace DAL.Classes
             return _dbContext.AudioBooks.ToList();    
         }
 
-        public IEnumerable<Film> GetFilms()
+        public async Task<AudioBook> GetBookById(int id)
+        {
+            return _dbContext.AudioBooks.Find(id);
+        }
+
+        public async Task<Film> GetFilmById(int id)
+        {
+            var film = _dbContext.Films.FirstOrDefault(x => x.id == id);
+            if (film != null)
+                return film;
+            return null;
+        }
+
+        public async Task<Film> GetFilmByName(string name)
+        {
+            Film film = _dbContext.Films.Find(name);
+            return film;
+        }
+        public string GetSongPath(int id)
+        {
+            var song = _dbContext.Songs.Find(id);
+            return song.route;
+        }
+       public IEnumerable<Film> GetFilms()
         {
             return _dbContext.Films.ToList();
+        }
+
+        public async Task<Podcast> GetPodcastById(int id)
+        {
+            return _dbContext.Podcasts.Find(id);
         }
 
         public IEnumerable<Podcast> GetPodcasts()
         {
             return _dbContext.Podcasts.ToList();
+        }
+
+        public async Task<Song> GetSongById(int id)
+        {
+            return _dbContext.Songs.Find(id);
         }
 
         public IEnumerable<Song> GetSongs()
@@ -87,31 +121,31 @@ namespace DAL.Classes
              List<Podcast> podcasts = new List<Podcast>();
              List<Song> songs = new List<Song>();
              List<AudioBook> audiobooks = new List<AudioBook>();
-            List<MultimediaContent> content = new List<MultimediaContent>();
+            List<MultimediaContent> content =new List<MultimediaContent>();
             
             foreach (Film f in _dbContext.Films)
             {
                 if (f.title.Contains(word))
-                    films.Add(f);
+                    content.Add(f);
 
             }
 
             foreach (Song s in _dbContext.Songs)
             {
-                if (s.title.Equals(word))
-                    songs.Add(s);
+                if (s.title.Contains(word))
+                    content.Add(s);
             }
 
             foreach (AudioBook ab in _dbContext.AudioBooks)
             {
-                if (ab.title.Equals(word))
-                    audiobooks.Add(ab);
+                if (ab.title.Contains(word))
+                    content.Add(ab);
 
             }
 
             foreach (Podcast p in _dbContext.Podcasts)
             {
-                if (p.title.Equals(word))
+                if (p.title.Contains(word))
                     podcasts.Add(p);
 
             }
@@ -122,6 +156,24 @@ namespace DAL.Classes
 
 
 
+        }
+
+        public string GetFilmPath(int id)
+        {
+            var film = _dbContext.Films.Find(id);
+            return film.route;
+        }
+
+        public string GetAudiobookPath(int id)
+        {
+            var audiobook = _dbContext.AudioBooks.Find(id);
+            return audiobook.route;
+        }
+
+        public string GetPodcastPath(int id)
+        {
+            var podcast = _dbContext.Podcasts.Find(id);
+            return podcast.route;
         }
     }
 }

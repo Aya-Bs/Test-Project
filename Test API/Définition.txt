@@ -3,3 +3,6 @@
 -pour authetification Google voir :
 https://www.youtube.com/watch?v=YSKqZcS6PLg
 
+- envoi d'email:
+https://code-maze.com/aspnetcore-send-email/
+
