@@ -94,7 +94,7 @@ namespace Test_API.Controllers
                 var stripeEvent = EventUtility.ConstructEvent(
                  json,
                  Request.Headers["Stripe-Signature"],
-                 _stripeSettings?.WHSecret
+                 _stripeSettings.WHSecret
                );
 
                 // Handle the event
