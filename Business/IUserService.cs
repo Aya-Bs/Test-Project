@@ -1,5 +1,6 @@
 ﻿using Entities;
 using Requests;
+using Stripe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,6 @@ namespace Business
         bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt);
         //public Task<ResponseObject> ForgotPassword(string email);
         //public Task<ResponseObject> ResetPassword(ResetPasswordViewModel model);
-
+        public Task UpdateCustomerId(Customer customer);
     }
 }

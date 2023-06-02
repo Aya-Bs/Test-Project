@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Security.Cryptography;
@@ -9,15 +8,16 @@ using System.Text.Json.Serialization;
 namespace Entities
 {
     [Table("User")]
-    public class User
+    public class User 
     {
-        private string name;
-        private string email1;
+       
 
         [Key]
         public int idUser { get; set; }
         public string nom { get; set; }
         public string prenom { get; set; }
+
+        public string CustomerId { get; set; }
         //n'affiche pas le mdp
 
         [JsonIgnore] public byte[] PasswordHash { get; set; }

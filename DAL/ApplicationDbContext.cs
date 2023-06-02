@@ -29,7 +29,8 @@ namespace DAL
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Offre> Offres { get; set; }
-       
+        public DbSet<Subscriber> Subscribers { get; set; }
+
         public DbSet<Abonnement> Abonnements { get; set; }
         public DbSet<Facture> Factures { get; set; }
         public DbSet<CartePaiement> CartePaiements { get; set; }

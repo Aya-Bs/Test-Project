@@ -22,6 +22,7 @@ using Entities;
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using DAL.Interfaces;
 using DAL.Classes;
+using System.Configuration;
 
 public class Program
 {
@@ -47,6 +48,7 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         /***************************/
+        builder.Services.Configure<StripeSettings>(configuration.GetSection("StripeSettings"));
 
         StripeConfiguration.ApiKey = configuration.GetValue<string>("StripeSettings:SecretKey");
         builder.Services
@@ -54,7 +56,6 @@ public class Program
                 .AddScoped<ChargeService>()
                 .AddScoped<TokenService>();
 
-                
 
         //inject automapper inside application (tell the app that we have to read the app we are created
         builder.Services.AddAutoMapper(typeof(Program).Assembly);
@@ -116,7 +117,7 @@ public class Program
         builder.Services.AddSingleton(emailConfig);
         //l'appel de la méthode "AddNewtonsoftJson()" du package "Microsoft.AspNetCore.Mvc.NewtonsoftJson"
         builder.Services.AddControllers().AddNewtonsoftJson();
-
+        
         var app = builder.Build();
         
 

@@ -13,7 +13,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-
+using Stripe;
 
 namespace Business
 {
@@ -28,6 +28,7 @@ namespace Business
            
            
         }
+        
         public async Task AddUser(User user)
         {
             await userRepository.AddUser(user);
@@ -72,6 +73,19 @@ namespace Business
                 return userRepository.GetUsers();
                 
         }
+
+        
+            public async Task UpdateCustomerId(Customer customer)
+            {
+                var user = await userRepository.GetUserByEmail(customer.Email);
+                if (user != null)
+                {
+                    user.CustomerId = customer.Id;
+                    await userRepository.UpdateUser(user);
+                }
+            }
+
+        
 
         public Task UpdateUser(User user)
         {
