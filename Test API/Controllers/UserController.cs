@@ -18,12 +18,13 @@ namespace Test_API.Controllers
     {
 
         private readonly IUserService userService;
-        
 
-        public UserController (IUserService userServ )
+
+        public UserController (IUserService userServ)
         {
             userService = userServ;
-            
+          
+
         }
 
         [HttpGet]

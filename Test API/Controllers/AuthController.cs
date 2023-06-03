@@ -26,19 +26,24 @@ namespace Test_API.Controllers
     {
         IUserRepository userRepository;
         private ApplicationDbContext context;
-        readonly JwtService jwtService;
+        //readonly JwtService jwtService;
         readonly IUserService userService;
         readonly IEmailSender emailSender;
-        
-      //  readonly HttpContextAccessor httpContextAccessor;
-        public AuthController(IUserService userServ, ApplicationDbContext _context, JwtService _jwtService, IEmailSender _emailSender)
+        private readonly ISubscriptionRepository _subscriberRepository;
+        private readonly IJWTTokenGenerator _jwtToken; //tokenjdida
+
+
+        //  readonly HttpContextAccessor httpContextAccessor;
+        public AuthController(IUserService userServ, ApplicationDbContext _context,  IEmailSender _emailSender, ISubscriptionRepository subscriberRepository, IJWTTokenGenerator jwtToken)
         {
             userService = userServ;
             context = _context;
-            jwtService = _jwtService;
+           // jwtService = _jwtService;
             emailSender = _emailSender;
-           
-            
+            _subscriberRepository = subscriberRepository;
+            _jwtToken = jwtToken;
+
+
         }
         [HttpPost]
         [Route("Register")]
@@ -77,17 +82,55 @@ namespace Test_API.Controllers
             {
                 return BadRequest("mot de passe incorrect !");
             }
+
+
+
+            var subscription = await _subscriberRepository.GetByCustomerIdAsync(user.CustomerId);
+            DateTime expDate;
+            var isSubscriber = false;
+
+            if (subscription != null && subscription.Status == "active")
+            {
+                isSubscriber = true;
+                expDate = subscription.CurrentPeriodEnd;
+            }
+            else
+            {
+                expDate = DateTime.Now.AddDays(7);
+            }
+            /* nahitou njareb f token mte3y
+
             var jwt = jwtService.Generate(user.idUser);
             //le frontend ne peut accéder au jwt, il doit seulement l'obtenir et l'envoyer vers le backend qui va le traiter
             Response.Cookies.Append("jwt", jwt, new CookieOptions
             {
                 HttpOnly = true
             });
-            return user;
+            return user;*/
+
+
+            var token = _jwtToken.GenerateToken(user, expDate, isSubscriber);
+
+            Response.Cookies.Append("jwt", token, new CookieOptions
+            {
+                HttpOnly = true
+                // Autres options de cookies peuvent être définies ici
+            });
+
+            return Ok(new
+            {
+                status = 200
+            });
+
+
+
 
 
         }
         //cette méthode permet de retourner un utilisateur a partir du token
+
+
+        /*
         [HttpGet]
         [Route("GetUserByToken")]
         public IActionResult GetUserByToken()
@@ -105,7 +148,11 @@ namespace Test_API.Controllers
                 return Unauthorized();
             }
 
-        }
+        }   */
+        
+        
+        
+        /*
         [HttpPost]
         [Route("Logout")]
         public IActionResult Logout()
@@ -116,7 +163,7 @@ namespace Test_API.Controllers
                 message = "vous étes déconnecté"
             });
 
-        }
+        }*/
         [HttpGet]
         [Route("sendEmail")]
         public async Task<IActionResult> Get([FromQuery] string[] email, string msg)

@@ -108,9 +108,15 @@ public class Program
         builder.Services.AddScoped<IMultimediaService, MultimediaService>();
         builder.Services.AddScoped<IMultimediaRepository, MultimediaRepository>();
         builder.Services.AddScoped<IEmailSender, EmailSender>();
-       
+        builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+
         //configurer JwtService en tant que service
         builder.Services.AddScoped<JwtService>();
+
+        builder.Services.AddScoped<IJWTTokenGenerator, JWTTokenGenerator>();
+
+
+
         var emailConfig = builder.Configuration
         .GetSection("EmailConfiguration")
         .Get<EmailConfiguration>();

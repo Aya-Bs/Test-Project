@@ -50,6 +50,7 @@ namespace Entities
 
         private void SetPassword(string password)
         {
+        
             if (!string.IsNullOrEmpty(password))
             {
                 using (var hmac = new HMACSHA512())
@@ -68,37 +69,32 @@ namespace Entities
             this.PasswordSalt = passSalt;
         }
 
-        /*  private void SetPassword(string password)
-          {
-              using (var hmac = new HMACSHA512())
-              {
-                  PasswordSalt = hmac.Key;
-                  PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-              }
-          }*/
-        /*public bool VerifyPassword(string password)
-        {
-            using (var hmac = new HMACSHA512(PasswordSalt))
-            {
-                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-                for (int i = 0; i < computedHash.Length; i++)
-                {
-                    if (computedHash[i] != PasswordHash[i])
-                        return false;
-                }
-                return true;
-            }
-        }*/
+       
         public User()
         {
         }
 
-        public User(string nom, string prenom, int telephone, string adresse)
-        {
-            this.nom = nom;
-            this.prenom = prenom;
-            this.telephone = telephone;
-            this.adresse = adresse;
-        }
+        
     }
 }
+/*  private void SetPassword(string password)
+         {
+             using (var hmac = new HMACSHA512())
+             {
+                 PasswordSalt = hmac.Key;
+                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+             }
+         }*/
+/*public bool VerifyPassword(string password)
+{
+    using (var hmac = new HMACSHA512(PasswordSalt))
+    {
+        var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+        for (int i = 0; i < computedHash.Length; i++)
+        {
+            if (computedHash[i] != PasswordHash[i])
+                return false;
+        }
+        return true;
+    }
+}*/
