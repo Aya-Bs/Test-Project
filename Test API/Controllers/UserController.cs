@@ -9,6 +9,10 @@ using User = Entities.User;
 using AutoMapper;
 using DAL.Classes;
 using DAL.Interfaces;
+using Helpers;
+using DAL;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System;
 
 namespace Test_API.Controllers
 {
@@ -18,12 +22,15 @@ namespace Test_API.Controllers
     {
 
         private readonly IUserService userService;
-        
+        readonly JwtService jwtService;
+        private readonly ApplicationDbContext dbContext;
 
-        public UserController (IUserService userServ )
+        public UserController(IUserService userServ, JwtService jwtServ, ApplicationDbContext applicationDb)
         {
             userService = userServ;
-            
+            jwtService = jwtServ;
+            dbContext = applicationDb;
+
         }
 
         [HttpGet]
@@ -31,7 +38,7 @@ namespace Test_API.Controllers
         public IEnumerable<User> GetUsers()
         {
             return userService.GetUsers();
-            
+
         }
 
         [HttpGet]
@@ -46,6 +53,20 @@ namespace Test_API.Controllers
             return Ok(user);
 
         }
+        [HttpGet]
+        [Route("GetUserByEmail")]
+        public async Task<IActionResult> GetUserByEmail(string email)
+        {
+            var user = userService.GetUserByEmail(email);
+            if (user != null)
+            {
+                return Ok(user);
+            }
+
+            return NotFound();
+
+
+        }
 
         [HttpPost]
         [Route("AddUser")]
@@ -55,38 +76,138 @@ namespace Test_API.Controllers
             return Created("successful", user);
         }
 
-        [HttpPut]
-        [Route("UpdateUser")]
-        public async Task<IActionResult> UpdateUser(User user)
-        {
-            userService.UpdateUser(user);
-            return NoContent();
-        }
+        
 
+        
+        [HttpGet]
+        [Route("GetToken")]
+        public IActionResult GetToken()
+        {
+            try
+            {
+                var jwt = Request.Cookies["jwt"];
+                return Ok(new { token = jwt });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred.");
+            }
+        }
+        [HttpGet]
+        [Route("GetUserByToken")]
+        public ActionResult<User> GetUserByToken()
+        {
+            try
+            {
+                var jwt = Request.Cookies["jwt"];
+                var token = jwtService.Verify(jwt);
+                int idUser = int.Parse(token.Issuer);
+                User user = userService.GetUserById(idUser);
+                return user;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
         [HttpPut]
         [Route("UpdateUserInfo")]
-        /*public async Task<IActionResult> UpdateUserDetails([FromQuery] string nom, string prenom, int telephone , string adresse)
+        public ActionResult<User> UpdateUserDetails([FromQuery] string nom, string prenom, int telephone, string adresse)
         {
-            var user;//= userService.GetUserByEmail);
-            if (user != null)
-            {
-                userService.UpdateUserDetails(nom, prenom, telephone, adresse);
+            var userResult = GetUserByToken();
+                if (userResult == null)
+                {
+                    return Unauthorized();
+                }
+                    var existingUser = userResult.Value;
+                    if (existingUser == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    var updatedUser = new User
+                    {
+                        idUser = existingUser.idUser,
+                        nom = nom,
+                        prenom = prenom,
+                        email = existingUser.email,
+                        PasswordHash = existingUser.PasswordHash,
+                        PasswordSalt = existingUser.PasswordSalt,
+                        telephone = telephone,
+                        adresse = adresse,
+                        CustomerId = existingUser.CustomerId
+                    };
+                    dbContext.Users.Update(updatedUser);
+                    // dbContext.Entry(existingUser).CurrentValues.SetValues(updatedUser);
+                    dbContext.SaveChanges();
+
+                    return updatedUser;
                 
+               
             }
-            return Ok("user updated");
-            
-        }*/
+        [HttpPut]
+        [Route("UpdateUser")]
+        public ActionResult<User> UpdateUser([FromQuery]string email, string nom, string prenom, int telephone, string adresse)
+        {
+            var userResult = userService.GetUserByEmail(email);
+
+            if (userResult == null)
+            {
+                return Unauthorized();
+            }
+            var existingUser = userResult.Result;
+            if (existingUser == null)
+            {
+                return Unauthorized();
+            }
+
+            var updatedUser = new User
+            {
+                idUser = existingUser.idUser,
+                nom = nom,
+                prenom = prenom,
+                email = existingUser.email,
+                PasswordHash = existingUser.PasswordHash,
+                PasswordSalt = existingUser.PasswordSalt,
+                telephone = telephone,
+                adresse = adresse,
+                CustomerId = existingUser.CustomerId
+            };
+            dbContext.Users.Update(updatedUser);
+            // dbContext.Entry(existingUser).CurrentValues.SetValues(updatedUser);
+            dbContext.SaveChanges();
+
+            return updatedUser;
+
+
+        }
 
 
         [HttpDelete]
         [Route("DeleteUser")]
-        public JsonResult DeleteUser(int id)
+        public IActionResult DeleteUser(string email)
         {
-            var result = userService.DeleteUser(id);
-            return new JsonResult("Deleted Successfully");
-        }
-      
+            var userResult = userService.GetUserByEmail(email);
 
+            try
+            {
+                var user = userResult.Result;
+
+                // Call the userService to delete the user
+                userService.DeleteUser(user.idUser);
+
+                // Delete the JWT token from the response cookies
+                Response.Cookies.Delete("jwt");
+
+                return Ok("Deleted Successfully");
+            }
+            catch (Exception e)
+            {
+                // You can handle the error scenario here
+                return StatusCode(500, $"An error occurred while deleting the user: {e.Message}");
+            }
+        }
+    
 
     }
 

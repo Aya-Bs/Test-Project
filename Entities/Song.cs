@@ -13,7 +13,7 @@ namespace Entities
 {
         public string artist { get; set; }
         public string[] lyrics { get; set; }
-    public Song(int id, string title, string description, string length, string plateforme,string route, string artist, string[] lyrics)
+    public Song(int id, string title, string description, string length, string plateforme,string route, string artist, string[] lyrics, string photo)
     {
         this.id = id;
             this.title = title;
@@ -25,6 +25,7 @@ namespace Entities
             this.route = route;
             this.artist = artist;
             this.lyrics = lyrics;
+            this.photo = photo;
         }
     public Song()
     {

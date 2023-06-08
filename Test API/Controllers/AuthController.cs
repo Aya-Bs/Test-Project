@@ -6,6 +6,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using EmailService;
 using Entities;
 using Helpers;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -13,9 +14,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
 using Requests;
+using System.Net.Mail;
 using System.Security.Cryptography;
-
+using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 namespace Test_API.Controllers
 {
@@ -29,14 +32,16 @@ namespace Test_API.Controllers
         readonly JwtService jwtService;
         readonly IUserService userService;
         readonly IEmailSender emailSender;
-        
-      //  readonly HttpContextAccessor httpContextAccessor;
-        public AuthController(IUserService userServ, ApplicationDbContext _context, JwtService _jwtService, IEmailSender _emailSender)
+        private readonly EmailConfiguration _emailConfig;
+
+        //  readonly HttpContextAccessor httpContextAccessor;
+        public AuthController(IUserService userServ, ApplicationDbContext _context, JwtService _jwtService, IEmailSender _emailSender,EmailConfiguration emailConfiguration)
         {
             userService = userServ;
             context = _context;
             jwtService = _jwtService;
             emailSender = _emailSender;
+            _emailConfig = emailConfiguration;
            
             
         }
@@ -44,12 +49,13 @@ namespace Test_API.Controllers
         [Route("Register")]
         public async Task<ActionResult<User>> Register([FromQuery] UserRegisterDto request)
         {
-            if (userService.GetUserByEmail(request.email) == null)
+            var user = userService.GetUsers().FirstOrDefault(x => x.email == request.email);
+            if (user != null)
             {
                 return NotFound("ce compte existe déjà");
             }
             userService.CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);
-            var user = new User
+            user = new User
             {
                 email = request.email,
                 PasswordHash = passwordHash,
@@ -58,8 +64,15 @@ namespace Test_API.Controllers
                 nom = request.nom,
                 prenom = request.prenom,
                 telephone = request.telephone,
+                CustomerId = string.Empty
             };
             userService.AddUser(user);
+            var jwt = jwtService.Generate(user.idUser);
+            //le frontend ne peut accéder au jwt, il doit seulement l'obtenir et l'envoyer vers le backend qui va le traiter
+            Response.Cookies.Append("jwt", jwt, new CookieOptions
+            {
+                HttpOnly = true
+            });
 
             return user;
         }
@@ -87,25 +100,40 @@ namespace Test_API.Controllers
 
 
         }
+        [HttpGet]
+        [Route("GetToken")]
+        public IActionResult GetToken()
+        {
+            try
+            {
+                var jwt = Request.Cookies["jwt"];
+                return Ok(new { token = jwt });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred.");
+            }
+        }
         //cette méthode permet de retourner un utilisateur a partir du token
         [HttpGet]
         [Route("GetUserByToken")]
-        public IActionResult GetUserByToken()
+        public ActionResult<User> GetUserByToken()
         {
             try
             {
                 var jwt = Request.Cookies["jwt"];
                 var token = jwtService.Verify(jwt);
                 int idUser = int.Parse(token.Issuer);
-                var user = userService.GetUserById(idUser);
-                return Ok(user);
+                User user = userService.GetUserById(idUser);
+                return user;
             }
             catch (Exception e)
             {
-                return Unauthorized();
+                return null;
             }
-
         }
+
+
         [HttpPost]
         [Route("Logout")]
         public IActionResult Logout()
@@ -119,32 +147,38 @@ namespace Test_API.Controllers
         }
         [HttpGet]
         [Route("sendEmail")]
-        public async Task<IActionResult> Get([FromQuery] string[] email, string msg)
+        public async Task<IActionResult> Get([FromQuery] string emailto, string msg, string emailfrom)
         {
+
             var rng = new Random();
-            var message = new Message(email, "Test email", msg);
-            emailSender.SendEmailAsync(message);
+            var message = new Message(emailto, "Test email", msg, emailfrom);
+            emailSender.SendEmail(message);
 
             return Ok("success");
         }
-        [HttpPost("ForgotPassword")]
-        /*public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
+        [HttpPost]
+        [Route("ContactUs")]
+        public async Task<IActionResult> ContactUs([FromQuery] string name, string subject, string emailfrom,string password, string msg)
         {
-            if (ModelState.IsValid)
-            {
-
-                var result = await userService.ForgotPassword(forgotPasswordDto.Email);
-                if (!result.isValid)
-                {
-                    return Ok(new { Message = "Success" });
-                }
-                var callbackUrl = httpContextAccessor.AbsoluteUrl("", new { iduser = (string)result.Data["User"].idUser, code = (string)result.Data["code"] });
-                var message = new Message(forgotPasswordDto.Email, "Reset Password", callbackUrl);
-                await emailSender.SendEmailAsync(message);
-                return Ok(new { Message = "Succes" });
-            }
-            return BadRequest("We have encountered an error");
-        }*/
+            using (SmtpClient client = new SmtpClient())
+             {
+                 client.CheckCertificateRevocation = false;
+                 client.Connect("smtp.gmail.com", 465);
+                 client.AuthenticationMechanisms.Remove("XOAUTH2");
+                client.Authenticate(emailfrom, password);
+                var message = new MimeMessage();
+                 message.From.Add(new MailboxAddress( name, emailfrom));
+                 message.To.Add(new MailboxAddress("Support", "eyaboukh@gmail.com"));
+                 message.Subject = subject;
+                 message.Body = new TextPart("plain")
+                 {
+                     Text = msg
+                 };
+                 client.Send(message);
+             }
+             return Ok("message sent successfully");
+        }
+       
         [HttpGet("Reset Password")]
         [AllowAnonymous]
         public IActionResult ResetPassword(string code = null)

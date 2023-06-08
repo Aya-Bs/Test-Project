@@ -15,7 +15,7 @@ namespace DAL.Interfaces
         IEnumerable<User> GetUsers();
 
         // int? signifie que la valeur peut de int peut etre null
-        Task<User> GetUserById(int? id);
+     User GetUserById(int? id);
         Task AddUser(User user);
         Task DeleteUser(int id);
        Task<User> GetUserByEmail(string email);

@@ -13,7 +13,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-
+using Stripe;
 
 namespace Business
 {
@@ -52,19 +52,20 @@ namespace Business
 
         }
 
-        public  Task<User> GetUserByEmail(string email)
+        public async Task<User> GetUserByEmail(string email)
         {
-           return userRepository.GetUserByEmail(email);
-            //var user = userRepository.GetUsers().FirstOrDefault(x => x.email == email);
-           // return null;
+           return await userRepository.GetUserByEmail(email);
+            
                 
             
         }
 
-        public Task<User> GetUserById(int? id)
-        {
-            return userRepository.GetUserById(id);
+        public User GetUserById(int? id)
+        { 
+           var user= userRepository.GetUserById(id);
+            return user;
         }
+
 
         public IEnumerable<User> GetUsers()
         {
@@ -78,10 +79,39 @@ namespace Business
            return userRepository.UpdateUser(user);
         }
 
-        public Task UpdateUserDetails(string nom, string prenom,  int telephone, string adresse)
+        /*public User UpdateUserDetails(string nom, string prenom, int telephone, string adresse)
         {
-            return userRepository.UpdateUserDetails(nom, prenom, telephone, adresse);
-        }
+
+            User user = new User {
+                user.idUser = user.idUser,
+            user.nom = nom,
+            user.prenom = prenom,
+            user.email = user.email;
+            user.PasswordHash = user.PasswordHash;
+            user.PasswordSalt = user.PasswordSalt;
+            user.telephone = telephone;
+            user.adresse = adresse;
+            userRepository.UpdateUser(user);
+            return user;
+        };
+        }*/
+        /* public async Task UpdateCustomerId(Customer customer)
+          {
+              var user = await userRepository.GetUserByEmail(customer.Email);
+              if (user != null)
+              {
+                  user.idUser = user.idUser;
+                  user.nom = user.nom;
+                  user.prenom = user.prenom;
+                  user.adresse = user.adresse;
+                  user.telephone = user.telephone;
+                  user.PasswordHash = user.PasswordHash;
+                  user.PasswordSalt = user.PasswordSalt;
+                  user.CustomerId = customer.Id;
+              }
+              userRepository.UpdateUser(user);
+              return user;
+          }*/
 
         public bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
         {
@@ -99,85 +129,6 @@ namespace Business
 
 
         }
-        /*public async Task<ResponseObject> ForgotPassword(string email)
-        {
-            ResponseObject responseObject = new ResponseObject();
-            var user = await userManager.FindByEmailAsync(email);
-            try
-            {
-                if (user == null || !(await userManager.IsEmailConfirmedAsync(user)))
-                {
-                    responseObject.Message = "Failed";
-                    responseObject.isValid = false;
-                    responseObject.Data = null;
-                    return responseObject;
-                }
-                var code = await userManager.GeneratePasswordResetTokenAsync(user);
-                responseObject.Message = "Success";
-                responseObject.isValid = true;
-                var dynamicProperties = new Dictionary<string, object> { ["Code"] = code, ["User"] = user };
-                responseObject.Data = dynamicProperties;
-                return responseObject;
-            }
-            catch (Exception ex)
-            {
-
-                Log.Error("An error occured at Forgot Password {Error} {StackTrace} {Source}");
-                Log.Error(ex.Message);
-                Log.Error(ex.StackTrace);
-                
-                Log.Error(ex.Source);
-                responseObject.Message = "Error";
-                responseObject.isValid = false;
-                responseObject.Data = null;
-                return responseObject;
-
-            }
-        }
-
-        public async Task<ResponseObject> ResetPassword(ResetPasswordViewModel model)
-        {
-            ResponseObject responseObject = new ResponseObject();
-            
-            try
-            {
-                var user = await userManager.FindByEmailAsync(model.email);
-                if(user == null)
-                {
-                    responseObject.Message = "Failed";
-                    responseObject.isValid = false;
-                    responseObject.Data = null;
-                    return responseObject;
-                }
-                var result = await userManager.ResetPasswordAsync(user, model.Code, model.password);
-                if (result.Succeeded)
-                {
-                    
-                    this.CreatePasswordHash(model.password, out byte[] passwordHash, out byte[] passwordSalt);
-                    user.PasswordHash = passwordHash;
-                    user.PasswordSalt = passwordSalt;
-                    userRepository.UpdateUser(user);
-                    responseObject.Message = "Success";
-                    responseObject.isValid = true;
-                    responseObject.Data = null;
-                   
-                } return responseObject;
-
-            }
-            catch(Exception e)
-            {
-                Log.Error("An error occured at Forgot Password {Error} {StackTrace} {Source}");
-                Log.Error(e.Message);
-                Log.Error(e.StackTrace);
-
-                Log.Error(e.Source);
-                responseObject.Message = "Error";
-                responseObject.isValid = false;
-                responseObject.Data = null;
-                return responseObject;
-            }
-            
-            
-        }*/
+        
     }
 }

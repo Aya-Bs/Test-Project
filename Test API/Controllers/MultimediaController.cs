@@ -161,18 +161,24 @@ namespace Test_API.Controllers
 
         }
         [HttpGet]
-        [Route("api/podcasts/{id}")]
+        [Route("GetFilmPath")]
+        public async Task<string> GetFilmPath(int id)
+        {
+            return multimediaService.GetFilmPath(id);
+        }
 
         // Fetch the song file based on the provided ID or filename
+        [HttpGet]
+        [Route("api/podcasts/{id}")]
         public async Task<IActionResult> StreamPodcast(int id)
-        {
-            // Retrieve the song data based on the provided ID
-            byte[] podcastData = await multimediaService.RetrievePodcastDataAsync(id);
+         {
+             // Retrieve the song data based on the provided ID
+             byte[] podcastData = await multimediaService.RetrievePodcastDataAsync(id);
 
-            // Return the song data as a stream
-            Stream podcastStream = new MemoryStream(podcastData);
-            return File(podcastStream, "audio/mpeg"); // Set the appropriate content type for the song
-        }
+             // Return the song data as a stream
+             Stream podcastStream = new MemoryStream(podcastData);
+             return File(podcastStream, "audio/mpeg"); // Set the appropriate content type for the song
+         }
         [HttpGet]
         [Route("api/audiobooks/{id}")]
 

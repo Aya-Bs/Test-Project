@@ -33,10 +33,10 @@ namespace DAL.Classes
 
           
         }
-        public async Task<User> GetUserById(int? id)
+        public User GetUserById(int? id)
         {
-
-            return _dbContext.Users.Find(id);
+            var user= _dbContext.Users.Find(id);
+            return user;
 
         }
 
@@ -62,31 +62,25 @@ namespace DAL.Classes
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
         }
-        
+
         public async Task<User> GetUserByEmail(string email)
         {
-            return _dbContext.Users.Find(email);
-        }
+            var user= _dbContext.Users.FirstOrDefault(x=>x.email==email);
+            return user;
+            // return _dbContext.Users.FirstOrDefault(x => x.email == email);
 
+        }
+       
         public async Task UpdateUser(User user)
         {
             _dbContext.Users.Update(user);
             _dbContext.SaveChanges();
         }
-        public async Task UpdateUserDetails(string nom, string prenom,  int telephone, string adresse)
-        {
-           var user = new User(nom, prenom, telephone, adresse);
-              _dbContext.Users.Update(user);
-            _dbContext.SaveChanges();
-        }
-          
+       
 
           
 
-        public async Task UpdateUserDetails(string nom, string prenom)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         Task IUserRepository.UpdateUserDetails(string nom, string prenom, int telephone, string adresse)
         {

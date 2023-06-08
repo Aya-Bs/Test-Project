@@ -11,8 +11,7 @@ namespace Entities
     [Table("User")]
     public class User
     {
-        private string name;
-        private string email1;
+       
 
         [Key]
         public int idUser { get; set; }
@@ -27,24 +26,22 @@ namespace Entities
         public string adresse { get; set; }
         public string email { get; set; }
 
-        /* [ForeignKey("adresseidPays")]
-         public virtual Adresse adresse { get; set; }
-
-         public int adresseidPays;*/
-        //public CartePaiement carte { get; set; }
+        public string CustomerId { get; set; }
         
 
 #pragma warning disable CS8618 // Le propriété 'Adresses' non-nullable doit contenir une valeur non-null lors de la fermeture du constructeur. Envisagez de déclarer le propriété comme nullable.
-        public User(int idUser, string nom, string prenom, string email, string password, long telephone)
+        public User(int idUser, string nom, string prenom, string email, byte[] passwordsalt, byte[] passwordhash, long telephone,string adresse,string CustomerId)
         {
             this.idUser = idUser;
             this.nom = nom;
             this.prenom = prenom;
             this.email = email;
-            SetPassword(password); // Hash and salt the password before storing it
+            this.PasswordHash = passwordhash;
+            this.PasswordSalt = passwordsalt;
+            this.adresse = adresse;
             this.telephone = telephone;
-            //this.adresse = adresse;
-            //this.idPays = adresse.idPays;
+            this.CustomerId = CustomerId;
+
 
         }
 
@@ -95,10 +92,16 @@ namespace Entities
 
         public User(string nom, string prenom, int telephone, string adresse)
         {
+            this.idUser = idUser;
+            
             this.nom = nom;
             this.prenom = prenom;
             this.telephone = telephone;
             this.adresse = adresse;
+            this.email = email;
+            this.CustomerId = CustomerId;
+            this.PasswordHash = PasswordHash;
+            this.PasswordSalt = PasswordSalt;
         }
     }
 }

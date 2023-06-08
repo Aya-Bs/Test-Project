@@ -13,7 +13,7 @@ namespace Entities
         public string author { get; set; }
         public string rating { get; set; }
         public string topic { get; set; }
-        public AudioBook(int id, string title, string description, string length, string plateforme, string route,string author, string rating,string topic)
+        public AudioBook(int id, string title, string description, string length, string plateforme, string route,string author, string rating,string topic,string photo)
         {
             this.id = id;
             this.content_type = "audioBook";
@@ -25,6 +25,7 @@ namespace Entities
             this.author = author;
             this.rating = rating;
             this.topic = topic;
+            this.photo = photo;
         }
         public AudioBook()
         {

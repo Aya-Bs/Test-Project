@@ -5,6 +5,7 @@ using System.Reflection.Emit;
 using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Text.Json;
+using Microsoft.Extensions.Options;
 
 namespace DAL
 {//class used to access data through entity framework
@@ -25,6 +26,7 @@ namespace DAL
       protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {/*configurer la bd*/
             optionsBuilder.UseNpgsql(Configuration.GetConnectionString("WebApp"));
+            optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             //optionsBuilder.UseNpgsql("WebApp");
         }
         public DbSet<User> Users { get; set; }

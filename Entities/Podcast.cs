@@ -11,7 +11,7 @@ namespace Entities
     public class Podcast : MultimediaContent
 {
         public string topic { get; set; }
-        public Podcast(int id, string title, string description, string length, string plateforme,string topic)
+        public Podcast(int id, string title, string description, string length, string plateforme,string topic,string photo)
         {
             this.id = id;
             this.content_type = "podcast";
@@ -21,6 +21,7 @@ namespace Entities
             this.plateforme = plateforme;
             this.route = route;
             this.topic = topic;
+            this.photo = photo;
         }
         public Podcast()
         {

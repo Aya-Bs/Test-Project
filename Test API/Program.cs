@@ -66,7 +66,7 @@ public class Program
             option.AddDefaultPolicy(policy =>
             {
                policy
-                .WithOrigins(new[] { "http://localhost:50363", "http://localhost:8080", "http://localhost:4200", "http://localhost:5253" })
+                .WithOrigins(new[] { "http://localhost:62305", "http://localhost:8080", "http://localhost:4200", "http://localhost:5253" })
                 
                 .AllowAnyMethod()
                 .AllowAnyHeader()
@@ -110,6 +110,8 @@ public class Program
        
         //configurer JwtService en tant que service
         builder.Services.AddScoped<JwtService>();
+
+
         var emailConfig = builder.Configuration
         .GetSection("EmailConfiguration")
         .Get<EmailConfiguration>();
