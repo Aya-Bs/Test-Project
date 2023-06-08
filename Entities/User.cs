@@ -17,7 +17,7 @@ namespace Entities
         public string nom { get; set; }
         public string prenom { get; set; }
 
-        public string CustomerId { get; set; }
+        public string? CustomerId { get; set; }
         //n'affiche pas le mdp
 
         [JsonIgnore] public byte[] PasswordHash { get; set; }
@@ -45,7 +45,7 @@ namespace Entities
             this.telephone = telephone;
             //this.adresse = adresse;
             //this.idPays = adresse.idPays;
-
+           // this.CustomerId = CustomerId;
         }
 
         private void SetPassword(string password)

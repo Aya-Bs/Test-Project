@@ -23,11 +23,21 @@ using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using DAL.Interfaces;
 using DAL.Classes;
 using System.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 
 public class Program
 {
     public static void Main(string[] args)
     {
+
+
+
+
+
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddControllers();
 
@@ -40,6 +50,8 @@ public class Program
 
         // Construire la configuration
         var configuration = configBuilder.Build();
+
+
 
         // Add services to the container.
         DefaultTypeMap.MatchNamesWithUnderscores = true;
@@ -55,6 +67,11 @@ public class Program
             .AddScoped<CustomerService>()
                 .AddScoped<ChargeService>()
                 .AddScoped<TokenService>();
+
+
+
+
+
 
 
         //inject automapper inside application (tell the app that we have to read the app we are created
@@ -75,8 +92,53 @@ public class Program
             });
         }
             );
-        
-        
+
+      /*  builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Token:Key"])),
+        ValidIssuer = configuration["Token:Issuer"],
+        ValidateIssuer = true,
+        ValidateAudience = false,
+    };
+});*/
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = configuration["Token:Issuer"],
+            ValidAudience = configuration["Token:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Token:Key"]))
+        };
+    });
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        })
+       .AddCookie(options =>
+       {
+           options.Cookie.Name = "YourCookieName"; // Définissez le nom du cookie ici
+           options.Cookie.HttpOnly = true; // Spécifiez si le cookie est accessible uniquement par HTTP
+           options.Cookie.SameSite = SameSiteMode.Strict; // Définissez la politique SameSite du cookie
+           options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // Définissez la politique de sécurité du cookie
+           options.ExpireTimeSpan = TimeSpan.FromDays(7); // Définissez la durée de validité du cookie
+           options.SlidingExpiration = true; // Activez l'expiration de session glissante
+       });
+
+
 
         //Pour l'inscription avec google
         //on installe le pckg authetication.google 
@@ -99,11 +161,11 @@ public class Program
         //çvd que l'interface IOR est un type de OR
         builder.Services.AddScoped<IOffreRepository, OffreRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
-        builder.Services.AddScoped<IAbonnementRepository, AbonnementRepository>();
+       // builder.Services.AddScoped<IAbonnementRepository, AbonnementRepository>();
         builder.Services.AddScoped<IFactureRepository, FactureRepository>();
         builder.Services.AddScoped<ICarteRepository, CarteRepository>();
         builder.Services.AddScoped<IUserService, UserService>();
-        builder.Services.AddScoped<IAbonnementService, AbonnementService>();
+        //builder.Services.AddScoped<IAbonnementService, AbonnementService>();
         builder.Services.AddScoped<ICarteService, CarteService>();
         builder.Services.AddScoped<IMultimediaService, MultimediaService>();
         builder.Services.AddScoped<IMultimediaRepository, MultimediaRepository>();
@@ -125,7 +187,39 @@ public class Program
         builder.Services.AddControllers().AddNewtonsoftJson();
         
         var app = builder.Build();
-        
+
+        //je veux configurer le webhook 
+
+
+        void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseCors("CorsPolicy");
+
+            app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers(); // Utilisez cette méthode pour mapper les contrôleurs
+
+                endpoints.MapControllerRoute(
+                    name: "webhook",
+                    pattern: "/Payment/Webhook",
+                    defaults: new { controller = "Payment", action = "HandleWebhook" });
+            });
+        }
+
 
 
         // Configure the HTTP request pipeline.
@@ -148,4 +242,7 @@ public class Program
 
         app.Run();
     }
+
+
+
 }

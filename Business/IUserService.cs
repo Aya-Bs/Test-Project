@@ -25,5 +25,6 @@ namespace Business
         //public Task<ResponseObject> ForgotPassword(string email);
         //public Task<ResponseObject> ResetPassword(ResetPasswordViewModel model);
         public Task UpdateCustomerId(Customer customer);
+        Task GetUserById();
     }
 }

@@ -31,30 +31,34 @@ namespace Test_API.Controllers
         readonly IEmailSender emailSender;
         private readonly ISubscriptionRepository _subscriberRepository;
         private readonly IJWTTokenGenerator _jwtToken; //tokenjdida
+        private readonly ApplicationDbContext _dbContext;
 
 
         //  readonly HttpContextAccessor httpContextAccessor;
-        public AuthController(IUserService userServ, ApplicationDbContext _context,  IEmailSender _emailSender, ISubscriptionRepository subscriberRepository, IJWTTokenGenerator jwtToken)
+        public AuthController(IUserService userServ, ApplicationDbContext _context, IEmailSender _emailSender, ISubscriptionRepository subscriberRepository, IJWTTokenGenerator jwtToken, ApplicationDbContext dbContext)
         {
             userService = userServ;
             context = _context;
-           // jwtService = _jwtService;
+            // jwtService = _jwtService;
             emailSender = _emailSender;
             _subscriberRepository = subscriberRepository;
             _jwtToken = jwtToken;
-
+            _dbContext = dbContext;
 
         }
         [HttpPost]
         [Route("Register")]
         public async Task<ActionResult<User>> Register([FromQuery] UserRegisterDto request)
         {
-            if (userService.GetUserByEmail(request.email) == null)
+
+
+            var user = userService.GetUsers().FirstOrDefault(x => x.email == request.email);
+            if (user != null)
             {
                 return NotFound("ce compte existe déjà");
             }
             userService.CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);
-            var user = new User
+            user = new User
             {
                 email = request.email,
                 PasswordHash = passwordHash,
@@ -63,8 +67,10 @@ namespace Test_API.Controllers
                 nom = request.nom,
                 prenom = request.prenom,
                 telephone = request.telephone,
+                CustomerId = string.Empty
             };
-            userService.AddUser(user);
+            await _dbContext.Users.AddAsync(user);
+            await _dbContext.SaveChangesAsync();
 
             return user;
         }
@@ -98,6 +104,24 @@ namespace Test_API.Controllers
             {
                 expDate = DateTime.Now.AddDays(7);
             }
+
+
+            var token = _jwtToken.GenerateToken(user, expDate, isSubscriber);
+
+            // Stocker le jeton dans un cookie
+            var tokenCookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                // Autres options de cookies peuvent être définies ici
+            };
+            Response.Cookies.Append("jwt", token, tokenCookieOptions);
+
+            return Ok(new
+            {
+                token
+            }); } 
+
+
             /* nahitou njareb f token mte3y
 
             var jwt = jwtService.Generate(user.idUser);
@@ -109,7 +133,7 @@ namespace Test_API.Controllers
             return user;*/
 
 
-            var token = _jwtToken.GenerateToken(user, expDate, isSubscriber);
+            /*var token = _jwtToken.GenerateToken(user, expDate, isSubscriber);
 
             Response.Cookies.Append("jwt", token, new CookieOptions
             {
@@ -120,51 +144,51 @@ namespace Test_API.Controllers
             return Ok(new
             {
                 status = 200
-            });
+            });*/
 
 
 
 
 
-        }
-        //cette méthode permet de retourner un utilisateur a partir du token
+
+            //cette méthode permet de retourner un utilisateur a partir du token
 
 
-        /*
-        [HttpGet]
-        [Route("GetUserByToken")]
-        public IActionResult GetUserByToken()
-        {
-            try
+            /*
+            [HttpGet]
+            [Route("GetUserByToken")]
+            public IActionResult GetUserByToken()
             {
-                var jwt = Request.Cookies["jwt"];
-                var token = jwtService.Verify(jwt);
-                int idUser = int.Parse(token.Issuer);
-                var user = userService.GetUserById(idUser);
-                return Ok(user);
-            }
-            catch (Exception e)
-            {
-                return Unauthorized();
-            }
+                try
+                {
+                    var jwt = Request.Cookies["jwt"];
+                    var token = jwtService.Verify(jwt);
+                    int idUser = int.Parse(token.Issuer);
+                    var user = userService.GetUserById(idUser);
+                    return Ok(user);
+                }
+                catch (Exception e)
+                {
+                    return Unauthorized();
+                }
 
-        }   */
-        
-        
-        
-        /*
-        [HttpPost]
-        [Route("Logout")]
-        public IActionResult Logout()
-        {
-            Response.Cookies.Delete("jwt");
-            return Ok(new
-            {
-                message = "vous étes déconnecté"
-            });
+            }   */
 
-        }*/
-        [HttpGet]
+
+
+            /*
+            [HttpPost]
+            [Route("Logout")]
+            public IActionResult Logout()
+            {
+                Response.Cookies.Delete("jwt");
+                return Ok(new
+                {
+                    message = "vous étes déconnecté"
+                });
+
+            }*/
+            [HttpGet]
         [Route("sendEmail")]
         public async Task<IActionResult> Get([FromQuery] string[] email, string msg)
         {

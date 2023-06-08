@@ -9,9 +9,9 @@ namespace Test_API.Controllers
 {
     [Route("/[controller]")]
     [ApiController]
-    public class AbonnementController : ControllerBase
-    {
-        
+    public class AbonnementController { }
+    
+       /* 
         private readonly IAbonnementService abonnementService;
         public AbonnementController(IAbonnementService abonnementServ)
         {
@@ -68,5 +68,5 @@ namespace Test_API.Controllers
             return abonnementService.GetAbonnementByContenu(word);
         }
     }
-
+       */
 }

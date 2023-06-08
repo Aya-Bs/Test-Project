@@ -67,6 +67,11 @@ namespace Business
             return userRepository.GetUserById(id);
         }
 
+        public Task GetUserById()
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<User> GetUsers()
         {
             

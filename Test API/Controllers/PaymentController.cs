@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Stripe;
 using Stripe.Checkout;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 //using Microsoft.AspNetCore.Identity;
 
@@ -16,30 +17,52 @@ namespace Test_API.Controllers
     [Route("/[controller]")]
     [ApiController]
     public class PaymentController : ControllerBase
-    {
+    { // idhafet ilyess
+        private readonly StripeClient stripeClient;
+
 
         private readonly StripeSettings _stripeSettings;
         private readonly ISubscriptionRepository _subscriberRepository;
-      //  private readonly ISubscriptionService subscriptionService;
         private readonly IUserService _userService;
 
 
-        //private readonly UserManager<User> _userManager;
-
-        //UserManager<User> userManager
-        //ISubscriptionRepository subscriberRepository,
-        public PaymentController(IOptions<StripeSettings> stripeSettings,  IUserService userService)
+        public PaymentController(IOptions<StripeSettings> stripeSettings, IUserService userService)
         {
-            //_userManager = userManager;
             StripeConfiguration.ApiKey = "sk_test_51NBE1QE0wr7UnfFe1Yhj2LucHi0QOuzhXAX9hxwuzo1HnEE98ulgy83am7s7oO6OegdlfeQSirwqwcWQ3cpsPnGe00G4qsueti";
             _stripeSettings = stripeSettings.Value;
-           // _subscriberRepository = subscriberRepository;
             _userService = userService;
-            
+            stripeClient = new StripeClient("sk_test_51NBE1QE0wr7UnfFe1Yhj2LucHi0QOuzhXAX9hxwuzo1HnEE98ulgy83am7s7oO6OegdlfeQSirwqwcWQ3cpsPnGe00G4qsueti");
+
 
         }
 
-        [HttpPost("create-checkout-session")]
+        [HttpGet]
+        [Route("GetAll")]
+        public List<string> GetCustomerIds()
+        {
+            var customerIds = new List<string>();
+
+            var options = new CustomerListOptions
+            {
+                Limit = 100 // Vous pouvez ajuster cette valeur en fonction du nombre de clients que vous avez
+            };
+
+            // Créez une instance du service Customer
+            var customerService = new CustomerService();
+
+            // Utilisez la méthode List pour obtenir la liste des clients Stripe
+            var customers = customerService.List();
+
+            foreach (var customer in customers)
+            {
+                customerIds.Add(customer.Id);
+            }
+
+            return customerIds;
+        }
+    
+
+    [HttpPost("create-checkout-session")]
         public async Task<IActionResult> CreateCheckoutSession([FromBody] CreateCheckoutSessionRequest req)
         {
             var options = new SessionCreateOptions
@@ -84,6 +107,109 @@ namespace Test_API.Controllers
             }
 
         }
+        //idhafet ilyes : 
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+        [HttpPost("customer-portal")]
+        public async Task<IActionResult> CustomerPortal([FromBody] CustomerPortalRequest req)
+        {
+            try {
+               
+
+                var options = new Stripe.BillingPortal.SessionCreateOptions
+            {
+                Customer = "cus_O1cdQfk6LnCX6f",
+                ReturnUrl = req.ReturnUrl,
+            };
+            var Service = new Stripe.BillingPortal.SessionService();
+            var session = await Service.CreateAsync(options);
+            return Ok( new 
+                {url = session.Url
+                });
+        }
+            catch (StripeException e)
+            {
+                Console.WriteLine(e.StripeError.Message);
+                return BadRequest(new ErrorResponse
+                {
+                    ErrorMessage = new ErrorMessage
+                    {
+                        Message = e.StripeError.Message,
+                    }
+                });
+            }
+        }
+
+
+
+
+
+
+
+        /*  
+        [Authorize]
+        [HttpPost("customer-portal")]
+        public async Task<IActionResult> CustomerPortal([FromBody] CustomerPortalRequest req)
+        {
+            try
+            {
+                ClaimsPrincipal principal = HttpContext.User as ClaimsPrincipal;
+                var claim = principal.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti); // Utiliser JwtRegisteredClaimNames.Jti pour récupérer l'ID de l'utilisateur à partir du jeton
+                int userId = int.Parse(claim.Value);
+
+                var userFromDb = await _userService.GetUserById(userId); // Utiliser l'ID de l'utilisateur pour récupérer les informations de l'utilisateur
+
+                if (userFromDb == null)
+                {
+                    return BadRequest();
+                }
+
+                var options = new Stripe.BillingPortal.SessionCreateOptions
+                {
+                    Customer = userFromDb.CustomerId,
+                    ReturnUrl = req.ReturnUrl,
+                };
+
+                var service = new Stripe.BillingPortal.SessionService();
+                var session = await service.CreateAsync(options);
+
+                return Ok(new
+                {
+                    url = session.Url
+                });
+            }
+            catch (StripeException e)
+            {
+                Console.WriteLine(e.StripeError.Message);
+                return BadRequest(new ErrorResponse
+                {
+                    ErrorMessage = new ErrorMessage
+                    {
+                        Message = e.StripeError.Message,
+                    }
+                });
+            }
+        }
+        */
+
+
+
+
+
+
+
         // POST api/<PaymentsController>/webhook
         [HttpPost("webhook")]
         public async Task<IActionResult> WebHook()
